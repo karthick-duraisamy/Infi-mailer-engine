@@ -1,0 +1,124 @@
+{
+    "responseCode": 0,
+    "response": {
+        "Message": "Success",
+        "data": {
+            "thread_id": "1836970372992994373",
+            "conversation": [
+                {
+                    "mail_id": "686b706f9a53af648f7ae29f",
+                    "message_id": "6f0445a3-dcde-4b8b-8e52-746ce8b3c748@atyourprice.net",
+                    "thread_id": "1836970372992994373",
+                    "folder": "INBOX",
+                    "labels": [
+                        "NonJunk"
+                    ],
+                    "from_address": "support@atyourprice.net",
+                    "to": [
+                        "madhivanan.e@infinitisoftware.net"
+                    ],
+                    "cc": [],
+                    "bcc": [],
+                    "subject": "Re: Reg:Need my ticket",
+                    "is_read": true,
+                    "is_starred": false,
+                    "has_attachment": false,
+                    "snippet": "<div style=\"font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: auto; padding: 20",
+                    "intent": null,
+                    "created_at": "2025-07-07T06:59:59.893000Z",
+                    "updated_at": "2025-07-07T06:59:59.893000Z",
+                    "server_created_at": "2025-07-07T06:59:59.893000Z",
+                    "reply_type": "MANUAL",
+                    "domain": "atyourprice.net",
+                    "entities": {},
+                    "ai_response": [],
+                    "body_plain": null,
+                    "body_html": null
+                },
+                {
+                    "mail_id": "686b707b85c546752e2d0023",
+                    "message_id": "<686b706f.a70a0220.2b70d.ca9e@mx.google.com>",
+                    "thread_id": "1836970372992994373",
+                    "folder": "[Gmail]/Sent Mail",
+                    "labels": [
+                        "\\Seen"
+                    ],
+                    "from_address": "support@atyourprice.net",
+                    "to": [
+                        "madhivanan.e@infinitisoftware.net"
+                    ],
+                    "cc": [
+                        "senthilkumar@infinitisoftware.net",
+                        "bothrajvasu@gmail.com"
+                    ],
+                    "bcc": [],
+                    "subject": "Re: Reg:Need my ticket",
+                    "is_read": true,
+                    "is_starred": false,
+                    "has_attachment": false,
+                    "snippet": "",
+                    "intent": "",
+                    "created_at": "2025-07-07T07:00:11.867000Z",
+                    "updated_at": "2025-07-07T07:00:11.867000Z",
+                    "server_created_at": "2025-07-07T06:59:57Z",
+                    "reply_type": "AI",
+                    "domain": "atyourprice.net",
+                    "entities": {},
+                    "ai_response": [],
+                    "body_plain": null,
+                    "body_html": "<!DOCTYPE html><html lang=\"en\" xmlns:o=\"urn:schemas-microsoft-com:office:office\" xmlns:v=\"urn:schemas-microsoft-com:vml\"><head><meta charset=\"UTF-8\"/><title></title><meta content=\"text/html; charset=utf-8\" http-equiv=\"Content-Type\"/><meta content=\"width=device-width, initial-scale=1.0\" name=\"viewport\"/><!--[if mso      ]><xml        ><o:OfficeDocumentSettings          ><o:PixelsPerInch>96</o:PixelsPerInch          ><o:AllowSVG /></o:OfficeDocumentSettings></xml    ><![endif]--><!--[if !mso]><!--><!--<![endif]--><style>      * {        box-sizing: border-box;      }      body {        margin: 0;        padding: 0;      }      a[x-apple-data-detectors] {        color: inherit !important;        text-decoration: inherit !important;      }      #MessageViewBody a {        color: inherit;        text-decoration: none;      }      p {        line-height: inherit;      }      .desktop_hide,      .desktop_hide table {        mso-hide: all;        display: none;        max-height: 0px;        overflow: hidden;      }      .image_block img + div {        display: none;      }      sup,      sub {        line-height: 0;        font-size: 75%;      }      @media (max-width: 620px) {        .desktop_hide table.icons-inner {          display: inline-block !important;        }        .icons-inner {          text-align: center;        }        .icons-inner td {          margin: 0 auto;        }        .mobile_hide {          display: none;        }        .row-content {          width: 100% !important;        }        .stack .column {          width: 100%;          display: block;        }        .mobile_hide {          min-height: 0;          max-height: 0;          max-width: 0;          overflow: hidden;          font-size: 0px;        }        .desktop_hide,        .desktop_hide table {          display: table !important;          max-height: none !important;        }      }    </style><!--[if mso      ]><style>        sup,        sub {          font-size: 100% !important;        }        sup {          mso-text-raise: 10%;        }        sub {          mso-text-raise: -10%;        }      </style><![endif]--></head><body class=\"body\" style=\"      background-color: #ffffff;      margin: 0;      padding: 0;      -webkit-text-size-adjust: none;      text-size-adjust: none;    \"><center><table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"nl-container\" role=\"presentation\" style=\"        mso-table-lspace: 0pt;        mso-table-rspace: 0pt;        background-color: #ffffff;      \" width=\"100%\"><tbody><tr><td><table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"row row-1\" role=\"presentation\" style=\"mso-table-lspace: 0pt; mso-table-rspace: 0pt\" width=\"100%\"><tbody><tr><td><table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"row-content stack\" role=\"presentation\" style=\"                        mso-table-lspace: 0pt;                        mso-table-rspace: 0pt;                        background-color: #1a4da1;                        color: #000000;                        width: 650px;                        margin: 0 auto;                      \" width=\"650\"><tbody><tr><td class=\"column column-1\" style=\"                              mso-table-lspace: 0pt;                              mso-table-rspace: 0pt;                              font-weight: 400;                              text-align: left;                              padding-bottom: 5px;                              padding-top: 5px;                              vertical-align: middle;                              border-top: 0px;                              border-right: 0px;                              border-bottom: 0px;                              border-left: 0px;                            \" width=\"25%\"><table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"image_block block-1\" role=\"presentation\" style=\"                                mso-table-lspace: 0pt;                                mso-table-rspace: 0pt;                              \" width=\"100%\"><tbody><tr><td class=\"pad\" style=\"                                    padding-bottom: 15px;                                    padding-top: 15px;                                    width: 100%;                                    padding-right: 0px;                                    padding-left: 20px;                                  \"><div align=\"center\" class=\"alignment\" style=\"line-height: 5px\"><div style=\"max-width: 90px\"><img height=\"auto\" src=\"https://www.atyourprice.net/wp-content/uploads/2024/07/a_y_p_1.gif\" style=\"                                          display: block;                                          height: auto;                                          border: 0;                                          width: 100%;                                        \" width=\"90\"/></div></div></td></tr></tbody></table></td><td class=\"column column-2\" style=\"                              mso-table-lspace: 0pt;                              mso-table-rspace: 0pt;                              font-weight: 400;                              text-align: left;                              padding-bottom: 5px;                              padding-top: 5px;                              vertical-align: middle;                              border-top: 0px;                              border-right: 0px;                              border-bottom: 0px;                              border-left: 0px;                            \" width=\"75%\"><table border=\"0\" cellpadding=\"10\" cellspacing=\"0\" class=\"heading_block block-1\" role=\"presentation\" style=\"                                mso-table-lspace: 0pt;                                mso-table-rspace: 0pt;                              \" width=\"100%\"><tbody><tr><td class=\"pad\"><h1 style=\"                                      margin: 0;                                      color: #ffffff;                                      direction: ltr;                                      font-family: 'Segoe UI', Arial, sans-serif;                                      font-size: 24px;                                      font-weight: 700;                                      letter-spacing: 0.5px;                                      line-height: 120%;                                      text-align: center;                                      mso-line-height-alt: 28px;                                    \">                                    AYP AI Agent – Smart Email Reply                                  </h1></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table><table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"row row-2\" role=\"presentation\" style=\"mso-table-lspace: 0pt; mso-table-rspace: 0pt\" width=\"100%\"><tbody><tr><td><table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"row-content stack\" role=\"presentation\" style=\"                        mso-table-lspace: 0pt;                        mso-table-rspace: 0pt;                        background-color: #ffffff;                        color: #000000;                        width: 600px;                        margin: 0 auto;                      \" width=\"600\"><tbody><tr><td class=\"column column-1\" style=\"                              mso-table-lspace: 0pt;                              mso-table-rspace: 0pt;                              font-weight: 400;                              text-align: left;                              padding-bottom: 5px;                              padding-top: 5px;                              vertical-align: top;                              border-top: 0px;                              border-right: 0px;                              border-bottom: 0px;                              border-left: 0px;                            \" width=\"100%\"><table border=\"0\" cellpadding=\"10\" cellspacing=\"0\" class=\"paragraph_block block-2\" role=\"presentation\" style=\"                                mso-table-lspace: 0pt;                                mso-table-rspace: 0pt;                                word-break: break-word;                              \" width=\"100%\"><tbody><tr><td class=\"pad\"><div style=\"                                      color: #101112;                                      direction: ltr;                                      font-family: Arial, Helvetica, sans-serif;                                      font-size: 18px;                                      font-weight: 400;                                      letter-spacing: 0px;                                      line-height: 140%;                                      text-align: left;                                      mso-line-height-alt: 19.2px;                                    \"><p style=\"margin: 0; margin-bottom: 16px\"><div style=\"font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: auto; padding: 20px;\"><p>    Dear Muniraj,  </p><p>    Kindly find the details of your flight booking with <strong>Order ID 1364719</strong> and <strong>AYPRC ID 5591081</strong>.  </p><p>    Your flight from <strong>Bengalooru</strong> to <strong>Surat</strong> is scheduled for <strong>July 12, 2025</strong>, departing at <strong>05:35</strong> and arriving at <strong>07:35</strong>.  </p><p>    The PNR for your <strong>Airindia Express</strong> flight is <strong>YY73TA</strong>.  </p><p>    Please download your e-ticket here:     <a href=\"https://corporate.atyourprice.net//userUpload/eticket/E-Ticket_5591081.pdf\" style=\"color: #0D5EA6; text-decoration: none;\">Download E-Ticket</a></p></div></p></div></td></tr></tbody></table><table border=\"0\" cellpadding=\"10\" cellspacing=\"0\" class=\"paragraph_block block-4\" role=\"presentation\" style=\"                                mso-table-lspace: 0pt;                                mso-table-rspace: 0pt;                                word-break: break-word;                              \" width=\"100%\"><tbody><tr><td class=\"pad\"><div style=\"                                      color: #101112;                                      direction: ltr;                                      font-family: Arial, Helvetica, sans-serif;                                      font-size: 18px;                                      font-weight: 400;                                      letter-spacing: 0px;                                      line-height: 150%;                                      text-align: left;                                      mso-line-height-alt: 19.2px;                                    \"><p style=\"margin: 0\">                                      Stay secure,<br/>                                      Team AtYourPrice                                    </p></div></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table><table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"row row-3\" role=\"presentation\" style=\"mso-table-lspace: 0pt; mso-table-rspace: 0pt\" width=\"100%\"><tbody><tr><td><table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"row-content stack\" role=\"presentation\" style=\"                        mso-table-lspace: 0pt;                        mso-table-rspace: 0pt;                        background-color: #1a4da1;                        color: #000000;                        width: 650px;                        margin: 0 auto;                      \" width=\"650\"><tbody><tr><td class=\"column column-1\" style=\"                              mso-table-lspace: 0pt;                              mso-table-rspace: 0pt;                              font-weight: 400;                              text-align: left;                              padding-bottom: 5px;                              padding-top: 5px;                              vertical-align: top;                              border-top: 0px;                              border-right: 0px;                              border-bottom: 0px;                              border-left: 0px;                            \" width=\"100%\"><table border=\"0\" cellpadding=\"10\" cellspacing=\"0\" class=\"heading_block block-1\" role=\"presentation\" style=\"                                mso-table-lspace: 0pt;                                mso-table-rspace: 0pt;                              \" width=\"100%\"><tbody><tr><td class=\"pad\"><h1 style=\"                                      margin: 0;                                      color: #7747ff;                                      direction: ltr;                                      font-family: Arial, Helvetica, sans-serif;                                      font-size: 12px;                                      font-weight: 700;                                      letter-spacing: normal;                                      line-height: 140%;                                      text-align: center;                                      margin-top: 0;                                      margin-bottom: 0;                                      mso-line-height-alt: 13.2px;                                    \"><span style=\"                                        word-break: break-word;                                        color: #ffffff;                                      \">If you have any questions or need                                      immediate assistance, please don't                                      hesitate to contact us at <a href=\"mailto:support@atyourprice.net\" style=\"                                          text-decoration: underline;                                          color: #7ff;                                        \">support@atyourprice.net</a></span><span style=\"                                        word-break: break-word;                                        color: #ffffff;                                      \">|<a href=\"https://operations.atyourprice.net\" style=\"                                          text-decoration: underline;                                          color: #7ff;                                        \">                                        operations.atyourprice.net</a>.</span></h1></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table><!-- End --></center></body><br/><br/><div style=\"border-top: 2px solid #007bff; padding-top: 15px; margin-top: 20px;\"><div style=\"margin: 15px 0; padding: 15px; background-color: #f8f9fa; border-left: 4px solid #007bff; border-radius: 5px;\"><div style=\"margin-bottom: 10px;\"><strong>From:</strong> Muniraj G <muniraj@infinitisoftware.net><br/><strong>To:</strong> support@atyourprice.net<br/><strong>Date:</strong> 2025-07-07 06:57:33<br/><strong>Subject:</strong> Reg:Need my ticket                        </muniraj@infinitisoftware.net></div><div style=\"border-top: 1px solid #dee2e6; padding-top: 10px; margin-top: 10px;\">                            Hi team,<br/>I need a eticket for this booking ayprc id is 5591081<br/>Thankyou<br/><br/>-- <br/><br/>Regards<br/>MUNIRAJ G<br/>SOFTWARE DEVELOPER<br/>muniraj@infinitisoftware.net<br/>www.infinitisoftware.net<br/>INFINITI | INSPIRING TRAVEL INNOVATION                        </div></div></div></html>"
+                },
+                {
+                    "mail_id": "686b702885c546752e2d001d",
+                    "message_id": "<CA+vQtdDjZ-d5mnS7iD66iZTR-zuZr4uhmeC1rs_QKm--cRanig@mail.gmail.com>",
+                    "thread_id": "1836970372992994373",
+                    "folder": "INBOX",
+                    "labels": [
+                        "NonJunk"
+                    ],
+                    "from_address": "Muniraj G <muniraj@infinitisoftware.net>",
+                    "to": [
+                        "support@atyourprice.net"
+                    ],
+                    "cc": [],
+                    "bcc": [],
+                    "subject": "Reg:Need my ticket",
+                    "is_read": true,
+                    "is_starred": false,
+                    "has_attachment": false,
+                    "snippet": "Hi team, I need a eticket for this booking ayprc id is 5591081 Thankyou -- Regards MUNIRAJ G SOFTWARE DEVELOPER muniraj@infinitisoftware.net www.infinitisoftware.net INFINITI | INSPIRING TRAVEL INNOVA",
+                    "intent": "get_eticket",
+                    "created_at": "2025-07-07T06:58:48.933000Z",
+                    "updated_at": "2025-07-07T06:58:48.933000Z",
+                    "server_created_at": "2025-07-07T06:57:33Z",
+                    "reply_type": "AI",
+                    "domain": "infinitisoftware.net",
+                    "entities": {
+                        "ayprc_id": 5591081,
+                        "email_id": "muniraj@infinitisoftware.net",
+                        "travel": "Flight"
+                    },
+                    "ai_response": "<div style=\"font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: auto; padding: 20px;\">\n  <p>\n    Dear Muniraj,\n  </p>\n  <p>\n    Kindly find the details of your flight booking with <b>Order ID 1364719</b> and <b>AYPRC ID 5591081</b>.\n  </p>\n  <p>\n    Your flight from <b>Bengalooru</b> to <b>Surat</b> is scheduled for <b>July 12, 2025</b>, departing at <b>05:35</b> and arriving at <b>07:35</b>.\n  </p>\n  <p>\n    The PNR for your <b>Airindia Express</b> flight is <b>YY73TA</b>.\n  </p>\n  <p>\n    Please download your e-ticket here:\n    <a href=\"https://corporate.atyourprice.net//userUpload/eticket/E-Ticket_5591081.pdf\" style=\"color: #0D5EA6; text-decoration: none;\">Download E-Ticket</a>\n  </p>\n</div>",
+                    "body_plain": "Hi team,\nI need a eticket for this booking ayprc id is 5591081\nThankyou\n--\nRegards\nMUNIRAJ G\nSOFTWARE DEVELOPER\nmuniraj@infinitisoftware.net\nwww.infinitisoftware.net\nINFINITI | INSPIRING TRAVEL INNOVATION",
+                    "body_html": "<!DOCTYPE html><html><head><meta charset=\"utf-8\"/><style>                        body, div, p, span, a, h2 {                             padding: 0; margin: 0;                             font-family: Arial, sans-serif;                             line-height: 1.5;                         }                        table { border-collapse: collapse; }                    </style></head><body><div dir=\"ltr\"><div>Hi team,</div><div>I need a eticket for this booking ayprc id is 5591081</div><div>Thankyou</div><div><br/></div><span class=\"gmail_signature_prefix\">-- </span><br/><div class=\"gmail_signature\" data-smartmail=\"gmail_signature\" dir=\"ltr\"><div dir=\"ltr\"><pre style=\"color:rgb(0,0,0)\"><p style='padding:3px 0px 0px;margin:0px;font-family:\"Times New Roman\";white-space:normal;font-size:14px;color:rgb(119,119,119)'>Regards</p><h2 style='padding:5px 0px 0px;margin:0px;font-family:\"Times New Roman\";white-space:normal;font-size:18px;color:rgb(9,35,72);line-height:21px'>MUNIRAJ G</h2><div style='padding:0px;margin:0px 0px 8px;font-family:\"Times New Roman\";font-size:medium;white-space:normal;overflow:hidden;width:350px'><div style=\"padding:0px 0px 5px;margin:0px;float:left\"><table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"border:none!important;margin:0px;padding:0px\"><tbody><tr><td colspan=\"2\" style=\"font-size:14px;color:rgb(9,35,72);padding:0px;border:none!important\">SOFTWARE DEVELOPER</td></tr><tr><td colspan=\"2\" height=\"2\" style=\"border:none!important\"><img border=\"0\" height=\"2\" style=\"display:block;margin:0px;padding:0px\" width=\"70\"/></td></tr><tr><td style=\"border:none!important\" valign=\"top\"><a href=\"mailto:muniraj@infinitisoftware.net\" style=\"padding:0px;margin:0px;color:rgb(0,0,0);font-size:14px;float:left\" target=\"_blank\">muniraj@infinitisoftware.net</a></td></tr><tr><td colspan=\"2\" height=\"2\" style=\"border:none!important\"><img border=\"0\" height=\"2\" style=\"display:block;margin:0px;padding:0px\" width=\"70\"/></td></tr><tr><td colspan=\"2\" height=\"2\" style=\"border:none!important\"><img border=\"0\" height=\"2\" style=\"display:block;margin:0px;padding:0px\" width=\"70\"/></td></tr><tr><td style=\"border:none!important\"><a href=\"https://www.infinitisoftware.net/\" style=\"padding:0px;margin:0px;color:rgb(0,0,0);font-size:14px;float:left\" target=\"_blank\">www.infinitisoftware.net</a></td></tr></tbody></table><table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"border:none!important\"><tbody><tr><td style=\"border:none!important\" valign=\"botom\"><h2 style=\"padding:0px;margin:0px;font-size:18px;color:rgb(9,35,72);line-height:0px\">INFINITI</h2></td><td align=\"center\" style=\"border:none!important;color:rgb(217,217,217);font-size:10px\" valign=\"top\" width=\"20\">|</td><td style=\"font-size:14px;border:none!important\" valign=\"top\">INSPIRING TRAVEL INNOVATION</td></tr></tbody></table></div></div></pre></div></div></div></body></html>"
+                }
+            ],
+            "masterInfo": {
+                "status": [
+                    {
+                        "label": "Active",
+                        "value": "681e080347e451e50daa3c8f"
+                    },
+                    {
+                        "label": "In-Active",
+                        "value": "681e080347e451e50daa3c90"
+                    },
+                    {
+                        "label": "Deleted",
+                        "value": "681e080347e451e50daa3c91"
+                    }
+                ]
+            }
+        }
+    }
+}

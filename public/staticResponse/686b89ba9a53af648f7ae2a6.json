@@ -1,0 +1,88 @@
+{
+    "responseCode": 0,
+    "response": {
+        "Message": "Success",
+        "data": {
+            "thread_id": "1836975789959891131",
+            "conversation": [
+                {
+                    "mail_id": "686b89ba9a53af648f7ae2a6",
+                    "message_id": "d2bfbf2f-608f-4717-a13f-bb0b0d958306@atyourprice.net",
+                    "thread_id": "1836975789959891131",
+                    "folder": "INBOX",
+                    "labels": [],
+                    "from_address": "support@atyourprice.net",
+                    "to": [
+                        "madhivanan.e@infinitisoftware.net"
+                    ],
+                    "cc": [],
+                    "bcc": [],
+                    "subject": "Re: Reg:send my ticket",
+                    "is_read": true,
+                    "is_starred": false,
+                    "has_attachment": false,
+                    "snippet": "<div style=\"font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: auto; padding: 20",
+                    "intent": null,
+                    "created_at": "2025-07-07T08:47:54.806000Z",
+                    "updated_at": "2025-07-07T08:47:54.806000Z",
+                    "server_created_at": "2025-07-07T08:47:54.806000Z",
+                    "reply_type": "MANUAL",
+                    "domain": "atyourprice.net",
+                    "entities": {},
+                    "ai_response": [],
+                    "body_plain": null,
+                    "body_html": null
+                },
+                {
+                    "mail_id": "686b847285c546752e2d00af",
+                    "message_id": "<CA+vQtdA2cayPWpvGBjMsEX2CE4-rew8aNxUeYAiGRhbfZMmTHQ@mail.gmail.com>",
+                    "thread_id": "1836975789959891131",
+                    "folder": "INBOX",
+                    "labels": [],
+                    "from_address": "Muniraj G <muniraj@infinitisoftware.net>",
+                    "to": [
+                        "yuvansri.infiniti@gmail.com"
+                    ],
+                    "cc": [],
+                    "bcc": [],
+                    "subject": "Reg:send my ticket",
+                    "is_read": true,
+                    "is_starred": false,
+                    "has_attachment": false,
+                    "snippet": "Hi team, I need a eticket for this booking ayprc id is 5591081 Thankyou -- Regards MUNIRAJ G SOFTWARE DEVELOPER muniraj@infinitisoftware.net www.infinitisoftware.net INFINITI | INSPIRING TRAVEL INNOVA",
+                    "intent": "get_eticket",
+                    "created_at": "2025-07-07T08:25:22.008000Z",
+                    "updated_at": "2025-07-07T08:25:22.008000Z",
+                    "server_created_at": "2025-07-07T08:23:38Z",
+                    "reply_type": "AI",
+                    "domain": "infinitisoftware.net",
+                    "entities": {
+                        "ayprc_id": 5591081,
+                        "email_id": "muniraj@infinitisoftware.net",
+                        "travel": "Flight",
+                        "order_id": 1364719
+                    },
+                    "ai_response": "<div style=\"font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: auto; padding: 20px;\">\n  <p>\n    Dear Muniraj,\n  </p>\n  <p>\n    Kindly find the details of your flight booking with <b>Order ID 1364719</b> and <b>AYPRC ID 5591081</b>.\n  </p>\n  <p>\n    Your flight from <b>Bengalooru</b> to <b>Surat</b> is scheduled for <b>July 12, 2025</b>, departing at <b>05:35</b> and arriving at <b>07:35</b>.\n  </p>\n  <p>\n    The PNR for your <b>Airindia Express</b> flight is <b>YY73TA</b>.\n  </p>\n  <p>\n    Please download your e-ticket here: \n    <a href=\"https://corporate.atyourprice.net//userUpload/eticket/E-Ticket_5591081.pdf\" style=\"color: #0D5EA6; text-decoration: none;\">Download E-Ticket</a>\n  </p>\n</div>",
+                    "body_plain": "Hi team,\nI need a eticket for this booking ayprc id is 5591081\nThankyou\n--\nRegards\nMUNIRAJ G\nSOFTWARE DEVELOPER\nmuniraj@infinitisoftware.net\nwww.infinitisoftware.net\nINFINITI | INSPIRING TRAVEL INNOVATION",
+                    "body_html": "<!DOCTYPE html><html><head><meta charset=\"utf-8\"/><style>                        body, div, p, span, a, h2 {                             padding: 0; margin: 0;                             font-family: Arial, sans-serif;                             line-height: 1.5;                         }                        table { border-collapse: collapse; }                    </style></head><body><div dir=\"ltr\"><div><div>Hi team,</div><div>I need a eticket for this booking ayprc id is 5591081</div><div>Thankyou</div></div><div><br/></div><span class=\"gmail_signature_prefix\">-- </span><br/><div class=\"gmail_signature\" data-smartmail=\"gmail_signature\" dir=\"ltr\"><div dir=\"ltr\"><pre style=\"color:rgb(0,0,0)\"><p style='padding:3px 0px 0px;margin:0px;font-family:\"Times New Roman\";white-space:normal;font-size:14px;color:rgb(119,119,119)'>Regards</p><h2 style='padding:5px 0px 0px;margin:0px;font-family:\"Times New Roman\";white-space:normal;font-size:18px;color:rgb(9,35,72);line-height:21px'>MUNIRAJ G</h2><div style='padding:0px;margin:0px 0px 8px;font-family:\"Times New Roman\";font-size:medium;white-space:normal;overflow:hidden;width:350px'><div style=\"padding:0px 0px 5px;margin:0px;float:left\"><table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"border:none!important;margin:0px;padding:0px\"><tbody><tr><td colspan=\"2\" style=\"font-size:14px;color:rgb(9,35,72);padding:0px;border:none!important\">SOFTWARE DEVELOPER</td></tr><tr><td colspan=\"2\" height=\"2\" style=\"border:none!important\"><img border=\"0\" height=\"2\" style=\"display:block;margin:0px;padding:0px\" width=\"70\"/></td></tr><tr><td style=\"border:none!important\" valign=\"top\"><a href=\"mailto:muniraj@infinitisoftware.net\" style=\"padding:0px;margin:0px;color:rgb(0,0,0);font-size:14px;float:left\" target=\"_blank\">muniraj@infinitisoftware.net</a></td></tr><tr><td colspan=\"2\" height=\"2\" style=\"border:none!important\"><img border=\"0\" height=\"2\" style=\"display:block;margin:0px;padding:0px\" width=\"70\"/></td></tr><tr><td colspan=\"2\" height=\"2\" style=\"border:none!important\"><img border=\"0\" height=\"2\" style=\"display:block;margin:0px;padding:0px\" width=\"70\"/></td></tr><tr><td style=\"border:none!important\"><a href=\"https://www.infinitisoftware.net/\" style=\"padding:0px;margin:0px;color:rgb(0,0,0);font-size:14px;float:left\" target=\"_blank\">www.infinitisoftware.net</a></td></tr></tbody></table><table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"border:none!important\"><tbody><tr><td style=\"border:none!important\" valign=\"botom\"><h2 style=\"padding:0px;margin:0px;font-size:18px;color:rgb(9,35,72);line-height:0px\">INFINITI</h2></td><td align=\"center\" style=\"border:none!important;color:rgb(217,217,217);font-size:10px\" valign=\"top\" width=\"20\">|</td><td style=\"font-size:14px;border:none!important\" valign=\"top\">INSPIRING TRAVEL INNOVATION</td></tr></tbody></table></div></div></pre></div></div></div></body></html>"
+                }
+            ],
+            "masterInfo": {
+                "status": [
+                    {
+                        "label": "Active",
+                        "value": "681e080347e451e50daa3c8f"
+                    },
+                    {
+                        "label": "In-Active",
+                        "value": "681e080347e451e50daa3c90"
+                    },
+                    {
+                        "label": "Deleted",
+                        "value": "681e080347e451e50daa3c91"
+                    }
+                ]
+            }
+        }
+    }
+}

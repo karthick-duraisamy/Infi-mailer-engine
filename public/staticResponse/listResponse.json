@@ -1,120 +1,275 @@
 {
   "responseCode": 0,
   "response": {
-    "Message": "Success",
-    "data": {
-      "links": {
-        "next": "http://local-email.grouprm.net/notification/mail-server/?project=1&page=2",
-        "previous": null
-      },
-      "count": 50,
-      "results": [
-        {
-          "message_id": "<1651233503.27131889.1750219666018@lor1-app85422.prod.linkedin.com>",
-          "thread_id": "1835238338366488291",
-          "folder": "INBOX",
-          "labels": ["\\Seen"],
-          "from_address": "LinkedIn <groups-noreply@linkedin.com>",
-          "to": ["Bothraj P <bothrajvasu@gmail.com>"],
-          "cc": [],
-          "bcc": [],
-          "subject": "Don’t miss conversations in Artificial Intelligence, Machine Learning, Data Science, Agentic, Generative AI, Scientist & Analyst",
-          "is_read": true,
-          "is_starred": true,
-          "is_deleted":false,
-          "has_attachment": false,
-          "snippet": "Don’t miss conversations in Artificial Intelligence, Machine Learning, Data Science, Agentic, Generative AI, Scientist & Analyst    ..................",
-          "intent": null,
-          "created_at": "2025-07-02T11:23:44.589000Z",
-          "updated_at": null,
-          "entities": {},
-          "message_response": []
-        },
-        {
-          "message_id": "<20250618003113.e81c08a7c2ebd70b@cio54818.mail.apollo.io>",
-          "thread_id": "1835224712814259576",
-          "folder": "INBOX",
-          "labels": ["\\Seen"],
-          "from_address": "Apollo <hello@mail.apollo.io>",
-          "to": ["bothrajvasu@gmail.com"],
-          "cc": [],
-          "bcc": [],
-          "subject": "✅ You've finished 1 of 8 tasks in your onboarding checklist.",
-          "is_read": true,
-          "is_starred": false,
-          "is_deleted":false,
-          "has_attachment": false,
-          "snippet": "You're on your way! Every task completed is one step closer to crushing quota. ( https://app.apollo.io/?utm_campaign=2501_LC_Onboarding_FreeUsers&utm_",
-          "intent": null,
-          "created_at": "2025-07-02T11:23:44.583000Z",
-          "updated_at": null,
-          "entities": {},
-          "message_response": []
-        },
-        {
-          "message_id": "<2006041411.25641024.1750185945634@lor1-app81930.prod.linkedin.com>",
-          "thread_id": "1835195436127033543",
-          "folder": "INBOX",
-          "labels": ["\\Seen"],
-          "from_address": "LinkedIn Job Alerts <jobalerts-noreply@linkedin.com>",
-          "to": ["Bothraj P <bothrajvasu@gmail.com>"],
-          "cc": [],
-          "bcc": [],
-          "subject": "“software engineer”: Globalcareers-Cotiviti - Software Engineer and more",
-          "is_read": true,
-          "is_starred": false,
-          "is_deleted":false,
-          "has_attachment": false,
-          "snippet": "Your job alert for software engineer in Chennai  30+ new jobs match your preferences.              Software Engineer  Cotiviti  India  This company is",
-          "intent": null,
-          "created_at": "2025-07-02T11:23:44.576000Z",
-          "updated_at": null,
-          "entities": {},
-          "message_response": []
-        },
-        {
-          "message_id": "<5kXfqCN5SLyfMv_WZvFDKw@geopod-ismtpd-39>",
-          "thread_id": "1835200489559893473",
-          "folder": "INBOX",
-          "labels": ["\\Seen"],
-          "from_address": "\"Udemy Instructor: SuperDataScience Team\" <no-reply@e.udemymail.com>",
-          "to": ["bothrajvasu@gmail.com"],
-          "cc": [],
-          "bcc": [],
-          "subject": "🚀 Big Shifts in Data Science, AI & Machine Learning 🤖",
-          "is_read": false,
-          "is_starred": false,
-          "is_deleted":false,
-          "has_attachment": false,
-          "snippet": "",
-          "intent": null,
-          "created_at": "2025-07-02T11:23:44.567000Z",
-          "updated_at": null,
-          "entities": {},
-          "message_response": []
-        },
-        {
-          "message_id": "<nseil/01977eaa-dab8-7214-a952-e13c669941a1/transactional/swift/nse-direct@uci.nse.co.in>",
-          "thread_id": "1835198946149319061",
-          "folder": "INBOX",
-          "labels": ["\\Seen"],
-          "from_address": "\"nse-direct\" <nse-direct@nse.co.in>",
-          "to": ["bothrajvasu@gmail.com"],
-          "cc": [],
-          "bcc": [],
-          "subject": "Trades executed at NSE",
-          "is_read": false,
-          "is_starred": false,
-          "is_deleted": true,
-          "has_attachment": true,
-          "snippet": "<div style=\"text-align:left\">        <p>Dear Investor,</p>  </div>     <p>With reference to SEBI circular ref no. CIR/MIRSD/15/2011dated August 02, 20",
-          "intent": null,
-          "created_at": "2025-07-02T11:23:44.565000Z",
-          "updated_at": null,
-          "entities": {},
-          "message_response": []
-        }
-      ]
-    }
+      "Message": "Success",
+      "data": {
+          "links": {
+              "next": null,
+              "previous": null
+          },
+          "count": 10,
+          "results": [
+              {
+                  "mail_id": "686b89ba9a53af648f7ae2a6",
+                  "message_id": "d2bfbf2f-608f-4717-a13f-bb0b0d958306@atyourprice.net",
+                  "thread_id": "1836975789959891131",
+                  "folder": "INBOX",
+                  "labels": [],
+                  "from_address": "support@atyourprice.net",
+                  "to": [
+                      "madhivanan.e@infinitisoftware.net"
+                  ],
+                  "cc": [],
+                  "bcc": [],
+                  "subject": "Re: Reg:send my ticket",
+                  "is_read": true,
+                  "is_starred": false,
+                  "has_attachment": false,
+                  "snippet": "<div style=\"font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: auto; padding: 20",
+                  "intent": null,
+                  "created_at": "2025-07-07T08:47:54.806000Z",
+                  "updated_at": "2025-07-07T08:47:54.806000Z",
+                  "server_created_at": "2025-07-07T08:47:54.806000Z",
+                  "reply_type": "MANUAL",
+                  "domain": "atyourprice.net"
+              },
+              {
+                  "mail_id": "686b7d869a53af648f7ae2a5",
+                  "message_id": "6bc2a222-8c7f-4262-a76f-8bef62396050@atyourprice.net",
+                  "thread_id": "1836971120175704602",
+                  "folder": "INBOX",
+                  "labels": [],
+                  "from_address": "support@atyourprice.net",
+                  "to": [
+                      "madhivanan.e@infinitisoftware.net"
+                  ],
+                  "cc": [],
+                  "bcc": [],
+                  "subject": "Re: REG:Need flights for my travel",
+                  "is_read": true,
+                  "is_starred": false,
+                  "has_attachment": false,
+                  "snippet": "<div>\n<p> Dear Valued Traveler, </p>\n<p> Based on your travel request, the following flight options ",
+                  "intent": null,
+                  "created_at": "2025-07-07T07:55:50.651000Z",
+                  "updated_at": "2025-07-07T07:55:50.651000Z",
+                  "server_created_at": "2025-07-07T07:55:50.651000Z",
+                  "reply_type": "MANUAL",
+                  "domain": "atyourprice.net"
+              },
+              {
+                  "mail_id": "686b7c139a53af648f7ae2a4",
+                  "message_id": "9adb965b-37a9-46d5-9b0b-1901e45fd1a0@atyourprice.net",
+                  "thread_id": "1836968798102497113",
+                  "folder": "INBOX",
+                  "labels": [
+                      "$label3",
+                      "NonJunk",
+                      "\\Seen"
+                  ],
+                  "from_address": "support@atyourprice.net",
+                  "to": [
+                      "madhivanan.e@infinitisoftware.net"
+                  ],
+                  "cc": [
+                      "Chirag.Micenic@kotak.com",
+                      "kalpesh.sonkusre@kotak.com"
+                  ],
+                  "bcc": [],
+                  "subject": "Re: Not able to login in travel portal-KMBL352833",
+                  "is_read": true,
+                  "is_starred": false,
+                  "has_attachment": false,
+                  "snippet": "We are currently looking into the issue you are experiencing with logging into the travel portal and",
+                  "intent": null,
+                  "created_at": "2025-07-07T07:49:39.318000Z",
+                  "updated_at": "2025-07-07T07:49:39.318000Z",
+                  "server_created_at": "2025-07-07T07:49:39.318000Z",
+                  "reply_type": "MANUAL",
+                  "domain": "atyourprice.net"
+              },
+              {
+                  "mail_id": "686b79949a53af648f7ae2a3",
+                  "message_id": "8d1967c3-d2a4-4cd5-93e9-4568ba228026@atyourprice.net",
+                  "thread_id": "1836968798102497113",
+                  "folder": "INBOX",
+                  "labels": [
+                      "$label3",
+                      "NonJunk",
+                      "\\Seen"
+                  ],
+                  "from_address": "support@atyourprice.net",
+                  "to": [
+                      "madhivanan.e@infinitisoftware.net"
+                  ],
+                  "cc": [
+                      "Chirag.Micenic@kotak.com",
+                      "kalpesh.sonkusre@kotak.com"
+                  ],
+                  "bcc": [],
+                  "subject": "Re: Not able to login in travel portal-KMBL352833",
+                  "is_read": true,
+                  "is_starred": false,
+                  "has_attachment": false,
+                  "snippet": "Dear Nayan, We have received your request for support with login issues on the travel portal. Please",
+                  "intent": null,
+                  "created_at": "2025-07-07T07:39:00.124000Z",
+                  "updated_at": "2025-07-07T07:39:00.124000Z",
+                  "server_created_at": "2025-07-07T07:39:00.124000Z",
+                  "reply_type": "MANUAL",
+                  "domain": "atyourprice.net"
+              },
+              {
+                  "mail_id": "686b77c69a53af648f7ae2a2",
+                  "message_id": "f5e7ef57-5476-42df-9695-5c7803f30144@atyourprice.net",
+                  "thread_id": "1836971120175704602",
+                  "folder": "INBOX",
+                  "labels": [],
+                  "from_address": "support@atyourprice.net",
+                  "to": [
+                      "madhivanan.e@infinitisoftware.net"
+                  ],
+                  "cc": [],
+                  "bcc": [],
+                  "subject": "Re: REG:Need flights for my travel",
+                  "is_read": true,
+                  "is_starred": false,
+                  "has_attachment": false,
+                  "snippet": "<div>\n<p> Dear Valued Traveler, </p>\n<p> Based on your travel request, the following flight options ",
+                  "intent": null,
+                  "created_at": "2025-07-07T07:31:18.882000Z",
+                  "updated_at": "2025-07-07T07:31:18.882000Z",
+                  "server_created_at": "2025-07-07T07:31:18.882000Z",
+                  "reply_type": "MANUAL",
+                  "domain": "atyourprice.net"
+              },
+              {
+                  "mail_id": "686b76f5c517730c567ae29f",
+                  "message_id": "322ff60f-8525-4dde-8398-124c9bd3d14f@atyourprice.net",
+                  "thread_id": "1836971120175704602",
+                  "folder": "INBOX",
+                  "labels": [],
+                  "from_address": "support@atyourprice.net",
+                  "to": [
+                      "madhivanan.e@infinitisoftware.net"
+                  ],
+                  "cc": [],
+                  "bcc": [],
+                  "subject": "Re: REG:Need flights for my travel",
+                  "is_read": true,
+                  "is_starred": false,
+                  "has_attachment": false,
+                  "snippet": "<div>\n<p> Dear Valued Traveler, </p>\n<p> Based on your travel request, the following flight options ",
+                  "intent": null,
+                  "created_at": "2025-07-07T07:27:49.662000Z",
+                  "updated_at": "2025-07-07T07:27:49.662000Z",
+                  "server_created_at": "2025-07-07T07:27:49.662000Z",
+                  "reply_type": "MANUAL",
+                  "domain": "atyourprice.net"
+              },
+              {
+                  "mail_id": "686b76a19a53af648f7ae2a1",
+                  "message_id": "f21caac2-e880-4aa9-a899-e510122686dd@atyourprice.net",
+                  "thread_id": "1834712211966343754",
+                  "folder": "INBOX",
+                  "labels": [
+                      "NonJunk"
+                  ],
+                  "from_address": "support@atyourprice.net",
+                  "to": [
+                      "madhivanan.e@infinitisoftware.net"
+                  ],
+                  "cc": [],
+                  "bcc": [],
+                  "subject": "Re: FW: Unable to login and reset password @ corporate.atyourprice.net",
+                  "is_read": true,
+                  "is_starred": false,
+                  "has_attachment": false,
+                  "snippet": "We are currently addressing the issue you reported regarding your inability to log in and reset your",
+                  "intent": null,
+                  "created_at": "2025-07-07T07:26:25.880000Z",
+                  "updated_at": "2025-07-07T07:26:25.880000Z",
+                  "server_created_at": "2025-07-07T07:26:25.880000Z",
+                  "reply_type": "MANUAL",
+                  "domain": "atyourprice.net"
+              },
+              {
+                  "mail_id": "686b74389a53af648f7ae2a0",
+                  "message_id": "731e5bac-be99-4089-bca5-72c304c51369@atyourprice.net",
+                  "thread_id": "1836971120175704602",
+                  "folder": "INBOX",
+                  "labels": [],
+                  "from_address": "support@atyourprice.net",
+                  "to": [
+                      "madhivanan.e@infinitisoftware.net"
+                  ],
+                  "cc": [],
+                  "bcc": [],
+                  "subject": "Re: REG:Need flights for my travel",
+                  "is_read": true,
+                  "is_starred": false,
+                  "has_attachment": false,
+                  "snippet": "<div>\n<p> Dear Valued Traveler, </p>\n<p> Based on your travel request, the following flight options ",
+                  "intent": null,
+                  "created_at": "2025-07-07T07:16:08.629000Z",
+                  "updated_at": "2025-07-07T07:16:08.629000Z",
+                  "server_created_at": "2025-07-07T07:16:08.629000Z",
+                  "reply_type": "MANUAL",
+                  "domain": "atyourprice.net"
+              },
+              {
+                  "mail_id": "686b706f9a53af648f7ae29f",
+                  "message_id": "6f0445a3-dcde-4b8b-8e52-746ce8b3c748@atyourprice.net",
+                  "thread_id": "1836970372992994373",
+                  "folder": "INBOX",
+                  "labels": [
+                      "NonJunk"
+                  ],
+                  "from_address": "support@atyourprice.net",
+                  "to": [
+                      "madhivanan.e@infinitisoftware.net"
+                  ],
+                  "cc": [],
+                  "bcc": [],
+                  "subject": "Re: Reg:Need my ticket",
+                  "is_read": true,
+                  "is_starred": false,
+                  "has_attachment": false,
+                  "snippet": "<div style=\"font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: auto; padding: 20",
+                  "intent": null,
+                  "created_at": "2025-07-07T06:59:59.893000Z",
+                  "updated_at": "2025-07-07T06:59:59.893000Z",
+                  "server_created_at": "2025-07-07T06:59:59.893000Z",
+                  "reply_type": "MANUAL",
+                  "domain": "atyourprice.net"
+              },
+              {
+                  "mail_id": "6866544a0349ece0222a9d17",
+                  "message_id": "<175152955744.17.8272567833030121560@grm_mlchatbot_api_server>",
+                  "thread_id": "1836611861602879237",
+                  "folder": "INBOX",
+                  "labels": [
+                      "\\Seen"
+                  ],
+                  "from_address": "noreply@grmapi-v2.infinitisoftware.net",
+                  "to": [
+                      "grmapisupport@infinitisoftware.net"
+                  ],
+                  "cc": [],
+                  "bcc": [],
+                  "subject": "[Django] ERROR (internal IP): Internal Server Error:\r\n /emailapi/variable_for_mapping/",
+                  "is_read": true,
+                  "is_starred": false,
+                  "has_attachment": false,
+                  "snippet": "Internal Server Error: /emailapi/variable_for_mapping/    AttributeError at /emailapi/variable_for_mapping/  'NoneType' object has no attribute 'setti",
+                  "intent": "",
+                  "created_at": "2025-07-03T09:58:34.886000Z",
+                  "updated_at": "2025-07-03T09:58:34.886000Z",
+                  "server_created_at": "2025-07-03T07:59:17Z",
+                  "reply_type": "AI",
+                  "domain": "grmapi-v2.infinitisoftware.net"
+              }
+          ]
+      }
   }
 }
