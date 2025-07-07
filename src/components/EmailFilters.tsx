@@ -1,6 +1,7 @@
-
-import React, { useState } from 'react';
-import { Filter, Calendar, Star, Paperclip, Mail, MailOpen, ChevronDown, X } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import {
+  Filter, Calendar, Star, Paperclip, Mail, MailOpen, ChevronDown, X,
+} from 'lucide-react';
 
 export interface FilterOptions {
   readStatus: 'all' | 'read' | 'unread';
@@ -26,45 +27,58 @@ const EmailFilters: React.FC<EmailFiltersProps> = ({
   onClearFilters,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null); // ✅ 1. Create a ref
+
+  // Add outside click detection
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen]);
 
   const updateFilter = (key: keyof FilterOptions, value: any) => {
-    onFiltersChange({
-      ...filters,
-      [key]: value,
-    });
+    onFiltersChange({ ...filters, [key]: value });
   };
 
   const updateDateRange = (field: 'from' | 'to', value: string) => {
     onFiltersChange({
       ...filters,
-      dateRange: {
-        ...filters.dateRange,
-        [field]: value,
-      },
+      dateRange: { ...filters.dateRange, [field]: value },
     });
   };
 
-  const hasActiveFilters = () => {
-    return (
-      filters.readStatus !== 'all' ||
-      filters.starred ||
-      filters.hasAttachment ||
-      filters.sortBy !== 'newest' ||
-      filters.dateRange.from ||
-      filters.dateRange.to ||
-      filters.intent !== 'all'
-    );
-  };
+  const hasActiveFilters = () => (
+    filters.readStatus !== 'all' ||
+    filters.starred ||
+    filters.hasAttachment ||
+    filters.sortBy !== 'newest' ||
+    filters.dateRange.from ||
+    filters.dateRange.to ||
+    filters.intent !== 'all'
+  );
 
   return (
-    <div className="relative">
+    <div className="relative" ref={dropdownRef}> {/* ✅ 3. Attach the ref */}
       {/* Filter Toggle Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
         className={`
           flex items-center space-x-2 px-3 py-2 rounded-lg border transition-colors
-          ${hasActiveFilters() 
-            ? 'bg-blue-50 border-blue-200 text-blue-700' 
+          ${hasActiveFilters()
+            ? 'bg-blue-50 border-blue-200 text-blue-700'
             : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50'
           }
         `}
@@ -223,6 +237,7 @@ const EmailFilters: React.FC<EmailFiltersProps> = ({
                 className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="all">All types</option>
+                <option value="new">New emails</option>
                 <option value="meetings">Meeting invites</option>
                 <option value="notifications">System notifications</option>
                 <option value="campaigns">Marketing campaigns</option>

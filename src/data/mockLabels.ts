@@ -57,6 +57,30 @@ export const mockCustomLabels: CustomLabel[] = [
     createdAt: '2024-01-14T00:00:00Z',
     isSystem: false,
   },
+  {
+    id: '$Forwarded',
+    name: 'Forwarded',
+    color: '#06B6D4', // cyan-500
+    description: 'Forwarded emails',
+    createdAt: '2024-01-15T00:00:00Z',
+    isSystem: true,
+  },
+  {
+    id: 'NonJunk',
+    name: 'Non-Junk',
+    color: '#10B981', // green-500 (same as personal for safety tag)
+    description: 'Recognized as not junk',
+    createdAt: '2024-01-16T00:00:00Z',
+    isSystem: true,
+  },
+  {
+    id: '\\Seen',
+    name: 'Seen',
+    color: '#3B82F6', // blue-500
+    description: 'Email has been read',
+    createdAt: '2024-01-17T00:00:00Z',
+    isSystem: true,
+  },
 ];
 
 export const labelColors = [
@@ -72,4 +96,5 @@ export const labelColors = [
   '#14B8A6', // teal-500
   '#F97316', // orange-500
   '#A855F7', // violet-500
+  '#9CA3AF', // gray-400 — newly added for `Seen`
 ];

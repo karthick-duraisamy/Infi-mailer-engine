@@ -22,6 +22,7 @@ const EmailLabelActions: React.FC<EmailLabelActionsProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedLabels, setSelectedLabels] = useState<string[]>(currentLabels);
+  const [isUpdating, setIsUpdating] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -39,9 +40,21 @@ const EmailLabelActions: React.FC<EmailLabelActionsProps> = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleLabelsChange = (newLabelIds: string[]) => {
+  const handleLabelsChange = async (newLabelIds: string[]) => {
+    setIsUpdating(true);
     setSelectedLabels(newLabelIds);
-    onLabelsChange(emailIds, newLabelIds);
+    
+    try {
+      onLabelsChange(emailIds, newLabelIds);
+      // Small delay to show loading state and close dropdown
+      setTimeout(() => {
+        setIsUpdating(false);
+        setIsOpen(false); // Close the dropdown after updating
+      }, 300);
+    } catch (error) {
+      setIsUpdating(false);
+      console.error('Error updating labels:', error);
+    }
   };
 
   const selectedLabelObjects = availableLabels.filter(label =>
@@ -52,15 +65,21 @@ const EmailLabelActions: React.FC<EmailLabelActionsProps> = ({
     <div ref={containerRef} className={`relative ${className}`}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center space-x-2 px-3 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+        disabled={isUpdating}
+        className={`flex items-center space-x-2 px-3 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors ${
+          isUpdating ? 'opacity-50 cursor-not-allowed' : ''
+        }`}
         title="Manage labels"
       >
-        <Tag className="w-4 h-4" />
+        <Tag className={`w-4 h-4 ${isUpdating ? 'animate-spin' : ''}`} />
         <span className="text-sm">Labels</span>
         {selectedLabels.length > 0 && (
           <span className="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded-full">
             {selectedLabels.length}
           </span>
+        )}
+        {isUpdating && (
+          <span className="text-xs text-gray-500">Updating...</span>
         )}
       </button>
 

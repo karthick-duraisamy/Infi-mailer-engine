@@ -1,6 +1,14 @@
 import { Email } from '../types/email';
 
-export const mockEmails: Email[] = [
+// Helper function to ensure all emails have an intent
+const ensureintent = (emails: any[]): any[] => {
+  return emails.map(email => ({
+    ...email,
+    intent: email.intent || 'new'
+  }));
+};
+
+const rawEmails: any[] = [
   {
     id: '1',
     sender: 'Sarah Johnson',
@@ -10,7 +18,7 @@ export const mockEmails: Email[] = [
     timestamp: '2024-01-15T16:45:00Z',
     isStarred: true,
     isRead: false,
-    intentLabel: 'report',
+    intent: 'report',
     customLabels: ['work', 'important'],
     messages: [
       {
@@ -58,6 +66,7 @@ Thanks for the great work!
 John`,
         timestamp: '2024-01-15T15:20:00Z',
         isRead: false,
+        replyType: 'manual',
       },
       {
         id: '1-3',
@@ -83,6 +92,7 @@ Best,
 Manager`,
         timestamp: '2024-01-15T16:45:00Z',
         isRead: false,
+        replyType: 'ai',
       },
     ],
   },
@@ -95,7 +105,7 @@ Manager`,
     timestamp: '2024-01-15T13:45:00Z',
     isStarred: false,
     isRead: false,
-    intentLabel: 'announcement',
+    intent: 'announcement',
     customLabels: ['work', 'urgent'],
     messages: [
       {
@@ -134,7 +144,7 @@ David`,
     timestamp: '2024-01-15T11:20:00Z',
     isStarred: true,
     isRead: true,
-    intentLabel: 'announcement',
+    intent: 'announcement',
     customLabels: ['personal'],
     messages: [
       {
@@ -173,7 +183,7 @@ Emma`,
     timestamp: '2024-01-15T09:15:00Z',
     isStarred: false,
     isRead: true,
-    intentLabel: 'meeting',
+    intent: 'meeting',
     customLabels: ['work', 'clients'],
     messages: [
       {
@@ -212,7 +222,7 @@ Michael`,
     timestamp: '2024-01-14T18:30:00Z',
     isStarred: false,
     isRead: true,
-    intentLabel: 'feedback',
+    intent: 'feedback',
     customLabels: ['work'],
     messages: [
       {
@@ -262,6 +272,7 @@ Best,
 Alex`,
         timestamp: '2024-01-14T18:30:00Z',
         isRead: true,
+        replyType: 'partial-ai',
       },
     ],
   },
@@ -274,7 +285,7 @@ Alex`,
     timestamp: '2024-01-14T08:00:00Z',
     isStarred: false,
     isRead: true,
-    intentLabel: 'announcement',
+    intent: 'announcement',
     customLabels: ['newsletters'],
     messages: [
       {
@@ -323,7 +334,7 @@ Tech Trends Team`,
     timestamp: '2024-01-13T14:20:00Z',
     isStarred: false,
     isRead: true,
-    intentLabel: 'general',
+    intent: 'general',
     customLabels: ['work'],
     messages: [
       {
@@ -352,4 +363,110 @@ John`,
       },
     ],
   },
+  {
+    id: '8',
+    sender: 'Alice Cooper',
+    senderEmail: 'alice.cooper@freelance.com',
+    subject: 'Collaboration Opportunity',
+    preview: 'Hi there, I came across your profile and would love to discuss a potential collaboration on an upcoming project...',
+    timestamp: '2024-01-15T10:30:00Z',
+    isStarred: false,
+    isRead: false,
+    // No intent - should be assigned 'new' automatically
+    customLabels: ['work'],
+    messages: [
+      {
+        id: '8-1',
+        sender: 'Alice Cooper',
+        senderEmail: 'alice.cooper@freelance.com',
+        to: ['user@company.com'],
+        subject: 'Collaboration Opportunity',
+        content: `Hi there,
+
+I came across your profile and would love to discuss a potential collaboration on an upcoming project. I believe our skills would complement each other perfectly.
+
+Would you be interested in a quick call to discuss the details?
+
+Best regards,
+Alice`,
+        timestamp: '2024-01-15T10:30:00Z',
+        isRead: false,
+      },
+    ],
+  },
+  {
+    id: '9',
+    sender: 'Support Team',
+    senderEmail: 'support@serviceplatform.com',
+    subject: 'Your Account Status Update',
+    preview: 'We wanted to let you know that your account has been successfully updated with the new features...',
+    timestamp: '2024-01-14T15:45:00Z',
+    isStarred: false,
+    isRead: false,
+    // No intent - should be assigned 'new' automatically
+    customLabels: [],
+    messages: [
+      {
+        id: '9-1',
+        sender: 'Support Team',
+        senderEmail: 'support@serviceplatform.com',
+        to: ['user@company.com'],
+        subject: 'Your Account Status Update',
+        content: `Hello,
+
+We wanted to let you know that your account has been successfully updated with the new features you requested.
+
+New features now available:
+• Enhanced dashboard analytics
+• Advanced reporting tools
+• Improved user management
+
+If you have any questions, please don't hesitate to contact us.
+
+Best regards,
+Support Team`,
+        timestamp: '2024-01-14T15:45:00Z',
+        isRead: false,
+      },
+    ],
+  },
+  {
+    id: '10',
+    sender: 'Marketing Insights',
+    senderEmail: 'insights@marketingpro.com',
+    subject: 'Industry Trends Report - Q1 2024',
+    preview: 'Get ahead of the competition with our latest industry trends analysis and market insights...',
+    timestamp: '2024-01-13T12:00:00Z',
+    isStarred: true,
+    isRead: false,
+    // No intent - should be assigned 'new' automatically
+    customLabels: ['newsletters'],
+    messages: [
+      {
+        id: '10-1',
+        sender: 'Marketing Insights',
+        senderEmail: 'insights@marketingpro.com',
+        to: ['subscribers@marketingpro.com'],
+        subject: 'Industry Trends Report - Q1 2024',
+        content: `Dear Subscriber,
+
+Get ahead of the competition with our latest industry trends analysis and market insights for Q1 2024.
+
+This comprehensive report covers:
+• Emerging market opportunities
+• Consumer behavior shifts
+• Technology adoption trends
+• Competitive landscape analysis
+
+Download your copy from our subscriber portal.
+
+Best regards,
+Marketing Insights Team`,
+        timestamp: '2024-01-13T12:00:00Z',
+        isRead: false,
+      },
+    ],
+  },
 ];
+
+export const mockEmails: Email[] = ensureintent(rawEmails);

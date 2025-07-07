@@ -8,8 +8,8 @@ export interface Email {
   isStarred: boolean;
   isRead: boolean;
   messages: EmailMessage[];
-  intentLabel?: 'meeting' | 'announcement' | 'system' | 'report' | 'feedback' | 'general';
-  customLabels?: string[]; // Array of custom label IDs
+  intentLabel?: 'meeting' | 'announcement' | 'system' | 'report' | 'feedback' | 'general' | 'new';
+  labels?: string[]; // Array of custom label IDs
 }
 
 export interface EmailMessage {
@@ -23,6 +23,7 @@ export interface EmailMessage {
   content: string;
   timestamp: string;
   isRead: boolean;
+  replyType?: 'manual' | 'ai' | 'partial-ai';
 }
 
 export interface Label {
