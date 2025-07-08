@@ -28,7 +28,7 @@ const LabelManager: React.FC<LabelManagerProps> = ({
   const [editName, setEditName] = useState('');
   const [editColor, setEditColor] = useState('');
   const [editDescription, setEditDescription] = useState('');
-  const [editCategory, setEditCategory] = useState<'intent' | 'corporate' | '>('');
+  const [editCategory, setEditCategory] = useState<'intent' | 'corporate' | ''>('');
   const [errors, setErrors] = useState<Record<string, string>>({});
   const modalRef = useRef<HTMLDivElement>(null);
 
