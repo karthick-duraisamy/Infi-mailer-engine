@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import Header from "./components/Header";
+import ActionBar from "./components/ActionBar";
 import { NavbarSkeleton } from "./components/skeletonLoader";
 import EmailList from "./components/EmailList";
 import ConversationThread from "./components/ConversationThread";
@@ -871,17 +872,6 @@ function App() {
       )} */}
       <Header
         onMenuToggle={handleMenuToggle}
-        onSearch={handleSearch}
-        onFiltersChange={handleFiltersChange}
-        filters={filters}
-        checkedEmails={checkedEmails}
-        onBulkMarkAsRead={handleBulkMarkAsRead}
-        onBulkDelete={handleBulkDelete}
-        onSelectAll={handleSelectAll}
-        onUnselectAll={handleUnselectAll}
-        onUndo={handleUndo}
-        hasSelection={checkedEmails.size > 0}
-        onComposeClick={handleComposeOpen}
       />
 
       {/* Top Navigation */}
@@ -893,6 +883,14 @@ function App() {
         customLabels={customLabels}
         onManageLabels={() => setLabelManagerOpen(true)}
         emailCounts={emailCounts}
+      />
+
+      {/* Action Bar with Search, Filters, Settings, and Compose */}
+      <ActionBar
+        onSearch={handleSearch}
+        onFiltersChange={handleFiltersChange}
+        filters={filters}
+        onComposeClick={handleComposeOpen}
       />
 
       <div className="flex-1 flex overflow-hidden">
