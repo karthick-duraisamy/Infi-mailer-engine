@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
+import { Layout, ConfigProvider, theme, notification } from "antd";
 import Header from "./components/Header";
-import { NavbarSkeleton } from "./components/skeletonLoader";
 import EmailList from "./components/EmailList";
 import ConversationThread from "./components/ConversationThread";
 import ComposeModal, { ComposeEmailData } from "./components/ComposeModal";
@@ -13,17 +13,18 @@ import { useSelector, useDispatch } from "react-redux";
 import { setFilterSettings } from "./store/filterSlice";
 import Sidebar from "./components/Sidebar";
 
+const { Content, Sider } = Layout;
+
 function App() {
   const [activeItem, setActiveItem] = useState("inbox");
   const [selectedEmail, setSelectedEmail] = useState<Email | null | any>(null);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [getMailList, getMailListResponse] = useLazyGetMailListResponseQuery();
   const [emails, setEmails] = useState<any[]>([]);
   const [deletedEmails, setDeletedEmails] = useState<any[]>([]);
-  const [customLabels, setCustomLabels] =
-    useState<CustomLabel[]>(mockCustomLabels);
+  const [customLabels, setCustomLabels] = useState<CustomLabel[]>(mockCustomLabels);
   const [showNotification, setShowNotification] = useState(false);
-  const [differentNotificationCount, setDifferentNotificationCount] = useState<number | undefined>(undefined)
+  const [differentNotificationCount, setDifferentNotificationCount] = useState<number | undefined>(undefined);
   const [checkedEmails, setCheckedEmails] = useState<Set<string>>(new Set());
   const [searchQuery, setSearchQuery] = useState("");
   const [filters, setFilters] = useState<FilterOptions>({
@@ -34,15 +35,28 @@ function App() {
     dateRange: { from: "", to: "" },
     intent: "all",
   });
-  const [notificationState, setNotificationState] = useState<
-    number | undefined
-  >(undefined);
+  const [notificationState, setNotificationState] = useState<number | undefined>(undefined);
   const [searchFilter, setSearchFilter] = useState<any>({
     search: undefined,
   });
   const dispatch = useDispatch();
 
-  // const [sidebarWidth, setSidebarWidth] = useState(64); // default to collapsed width
+  const [aiReplyStates, setAiReplyStates] = useState({
+    isGenerating: false,
+    showAiReply: false,
+    generatedReply: "",
+    tone: "professional",
+  });
+
+  const [filterData, setFilterData] = useState<any>({
+    page: 1,
+    page_size: 50,
+    search: undefined,
+    folder: 'inbox'
+  });
+
+  // Initialize notification API
+  const [api, contextHolder] = notification.useNotification();
 
   // The following useEffect is used to set initial user and project data in localStorage
   useEffect(() => {
@@ -53,25 +67,12 @@ function App() {
       );
       localStorage.setItem("project", "4");
     }
-  }, []);const [sidebarWidth, setSidebarWidth] = useState(64);
+  }, []);
 
-  const [aiReplyStates, setAiReplyStates] = useState({
-    isGenerating: false,
-    showAiReply: false,
-    generatedReply: "",
-    tone: "professional",
-  });
-
-  const [filterData, setFilterData] = useState<any>({
-      page: 1,
-      page_size: 50,
-      search: undefined,
-      folder: 'inbox'
-    });
-
-  // useEffect(() => {
-  //   getMailList({});
-  // }, []);
+  const [labelManagerOpen, setLabelManagerOpen] = useState(false);
+  const [isFullPageView, setIsFullPageView] = useState(false);
+  const [composePanelOpen, setComposePanelOpen] = useState(false);
+  const [lastAction, setLastAction] = useState<any>(null);
 
   useEffect(() => {
     // Initial call
@@ -80,40 +81,39 @@ function App() {
     // Set interval
     const intervalId = setInterval(() => {
       getMailList(filterData);
-    }, 60000); // Poll every 150 seconds
+    }, 60000); // Poll every 60 seconds
 
     // Cleanup on unmount
     return () => clearInterval(intervalId);
   }, [getMailList]);
 
   useEffect(() => {
-    console.log(notificationState);
-  }, [notificationState]);
-
-  useEffect(() => {
     if (getMailListResponse?.isSuccess) {
-      const staticList = (getMailListResponse as any)?.data?.response?.data
-        ?.results;
-      const latestCount = Number(
-        (getMailListResponse as any)?.data?.response?.data?.count
-      );
+      const staticList = (getMailListResponse as any)?.data?.response?.data?.results;
+      const latestCount = Number((getMailListResponse as any)?.data?.response?.data?.count);
 
       if (notificationState !== undefined) {
         if (notificationState !== latestCount) {
           setDifferentNotificationCount(latestCount - notificationState);
           setShowNotification(true);
-          console.log('difference generated')
-          if (localStorage.getItem("notify") === "true") {
-            // alert(`You have ${differentNotificationCount} new messages`);
-          }
+          
+          // Show Ant Design notification
+          api.info({
+            message: 'New Messages',
+            description: `You have ${latestCount - notificationState} new messages`,
+            placement: 'topRight',
+            duration: 3,
+          });
+
           const timer = setTimeout(() => {
             setShowNotification(false);
-          }, 3000); // hide after 3 seconds
+          }, 3000);
 
-          return () => clearTimeout(timer); // clean up
+          return () => clearTimeout(timer);
         }
       }
       setNotificationState(latestCount);
+      
       if (staticList && Array.isArray(staticList)) {
         setEmails(
           staticList.map((email: any) => ({
@@ -136,38 +136,20 @@ function App() {
         setDeletedEmails(deletedEmails);
       }
     }
-  }, [getMailListResponse]);
-
-  const [labelManagerOpen, setLabelManagerOpen] = useState(false);
-  const [isFullPageView, setIsFullPageView] = useState(false);
-  const [composePanelOpen, setComposePanelOpen] = useState(false);
-  const [lastAction, setLastAction] = useState<any>(null);
+  }, [getMailListResponse, api]);
 
   // Calculate email counts for sidebar
   const calculateEmailCounts = () => {
     const counts: Record<string, number> = {};
 
-    // Basic sections - show unread count
-    counts.inbox =
-      emails?.filter(
-        (email) => (!email.is_read || email.is_read) && !email.is_deleted
-      ).length || 0;
+    counts.inbox = emails?.filter((email) => (!email.is_read || email.is_read) && !email.is_deleted).length || 0;
     counts.starred = emails?.filter((email) => email.is_starred).length || 0;
-    counts.snoozed = 0; // Mock data doesn't have snoozed emails
+    counts.snoozed = 0;
     counts.bin = deletedEmails.filter((email) => email.is_deleted).length || 0;
 
-    // Custom labels - show unread count
     emails?.forEach((label) => {
       if (label.labels && label.labels.length > 0) {
-        // System labels
         let labelEmails: any[] = [];
-
-        // Compute emailsOnly for each email
-        const emailsWithEmailsOnly = emails?.map((email) => ({
-          ...email,
-          emailsOnly: email.to,
-        }));
-        // System labels
 
         switch (label.labels[0]) {
           case "work":
@@ -203,17 +185,12 @@ function App() {
             );
             break;
         }
-        counts[`label-${label.id}`] = labelEmails.filter(
-          (email) => !email.is_read
-        ).length;
+        counts[`label-${label.id}`] = labelEmails.filter((email) => !email.is_read).length;
       } else {
-        // Custom labels
         const labelEmails = emails.filter((email) =>
           email.customLabels?.includes(label.id)
         );
-        counts[`custom-label-${label.id}`] = labelEmails.filter(
-          (email) => !email.is_read
-        ).length;
+        counts[`custom-label-${label.id}`] = labelEmails.filter((email) => !email.is_read).length;
       }
     });
 
@@ -228,42 +205,32 @@ function App() {
   const applyFilters = (emailList: any[]) => {
     let filtered = [...emailList];
 
-    // Apply read status filter
     if (filters.readStatus === "read") {
       filtered = filtered.filter((email) => email.is_read === true);
     } else if (filters.readStatus === "unread") {
       filtered = filtered.filter((email) => email.is_read === false);
-    } else if (filters.readStatus === "all") {
-      filtered = emailList;
     }
 
-    // Apply starred filter
     if (filters.starred) {
       filtered = filtered.filter((email) => email.is_starred);
     }
 
-    // Apply attachment filter (mock logic - in real app, check email content)
     if (filters.hasAttachment) {
       filtered = filtered.filter((email) =>
-        email.messages.some(
+        email.messages?.some(
           (message: any) =>
-            message.content.toLowerCase().includes("attach") ||
-            message.content.toLowerCase().includes("file") ||
-            message.content.toLowerCase().includes("document")
+            message.content?.toLowerCase().includes("attach") ||
+            message.content?.toLowerCase().includes("file") ||
+            message.content?.toLowerCase().includes("document")
         )
       );
     }
 
-    // Apply date range filter
     if (filters.dateRange.from || filters.dateRange.to) {
       filtered = filtered.filter((email) => {
         const emailDate = new Date(email.created_at);
-        const fromDate = filters.dateRange.from
-          ? new Date(filters.dateRange.from)
-          : null;
-        const toDate = filters.dateRange.to
-          ? new Date(filters.dateRange.to + "T23:59:59")
-          : null;
+        const fromDate = filters.dateRange.from ? new Date(filters.dateRange.from) : null;
+        const toDate = filters.dateRange.to ? new Date(filters.dateRange.to + "T23:59:59") : null;
 
         return (
           (!fromDate || emailDate >= fromDate) &&
@@ -272,7 +239,6 @@ function App() {
       });
     }
 
-    // Apply intent-based filter
     if (filters.intent !== "all") {
       filtered = filtered.filter((email) => {
         if (email.labels) {
@@ -289,9 +255,10 @@ function App() {
               return true;
           }
         }
-        // Handle emails without intent labels as 'new'
+        
         const emailIntent = email.labels || "new";
         const content = `${email.subject} ${email?.snippet}`.toLowerCase();
+        
         switch (filters.intent) {
           case "meetings":
             return (
@@ -329,37 +296,29 @@ function App() {
       });
     }
 
-    // Apply sorting
     filtered.sort((a, b) => {
       switch (filters.sortBy) {
         case "oldest":
-          return (
-            new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
-          );
+          return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
         case "newest":
-          return (
-            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-          );
+          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
         case "subject-az":
           return a.subject.localeCompare(b.subject);
         case "subject-za":
           return b.subject.localeCompare(a.subject);
         case "sender-az":
-          return a.sender.localeCompare(b.from_address);
+          return a.sender?.localeCompare(b.from_address) || 0;
         case "sender-za":
-          return b.sender.localeCompare(a.from_address);
+          return b.sender?.localeCompare(a.from_address) || 0;
         case "starred-first":
           if (a.is_starred && !b.is_starred) return -1;
           if (!a.is_starred && b.is_starred) return 1;
-          return (
-            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-          );
+          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
         default:
-          return (
-            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-          );
+          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
       }
     });
+    
     return filtered;
   };
 
@@ -369,7 +328,7 @@ function App() {
       ?.map((email) => ({
         ...email,
         messages: email.messages || [],
-        conversationEmails: [email], // Each email is its own conversation
+        conversationEmails: [email],
       }))
       .sort(
         (a, b) =>
@@ -381,7 +340,6 @@ function App() {
   const filteredEmails = useMemo(() => {
     let filtered = conversations;
 
-    // Filter by section
     switch (activeItem) {
       case "inbox":
         filtered = conversations?.filter((email) => !email.is_deleted);
@@ -390,11 +348,9 @@ function App() {
         filtered = conversations?.filter((email) => email.is_starred);
         break;
       case "snoozed":
-        // For demo, show empty snoozed
         filtered = [];
         break;
       case "bin":
-        // Show deleted emails
         filtered =
           deletedEmails?.map((email) => ({
             ...email,
@@ -436,7 +392,6 @@ function App() {
         );
         break;
       default:
-        // Handle custom labels
         if (activeItem.startsWith("custom-label-")) {
           const labelId = activeItem.replace("custom-label-", "");
           filtered = conversations?.filter((email) =>
@@ -446,18 +401,16 @@ function App() {
         break;
     }
 
-    // Filter by search query
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
       filtered = filtered?.filter(
         (email) =>
           email.subject.toLowerCase().includes(query) ||
-          email.from_adress.toLowerCase().includes(query) ||
-          email.preview.toLowerCase().includes(query) ||
-          email.messages.some((message: any) =>
-            message.content.toLowerCase().includes(query)
+          email.from_address.toLowerCase().includes(query) ||
+          email.snippet?.toLowerCase().includes(query) ||
+          email.messages?.some((message: any) =>
+            message.content?.toLowerCase().includes(query)
           ) ||
-          // Search in custom labels
           (email.customLabels &&
             email.customLabels.some((labelId: any) => {
               const label = customLabels.find((l) => l.id === labelId);
@@ -466,7 +419,6 @@ function App() {
       );
     }
 
-    // Apply advanced filters
     filtered = applyFilters(filtered || []);
 
     return filtered;
@@ -483,7 +435,6 @@ function App() {
   const handleEmailSelect = (email: any, fullPage: boolean = false) => {
     setSelectedEmail(email);
     setIsFullPageView(fullPage);
-    // Mark email as read when selected
     setEmails((prevEmails) =>
       prevEmails?.map((e) =>
         e.message_id === email.message_id ? { ...e, is_read: true } : e
@@ -496,7 +447,6 @@ function App() {
   };
 
   const handleStarToggle = (emailId: string) => {
-    // Store previous state for undo
     const email = emails?.find((email) => email.message_id === emailId);
     if (!email) return;
 
@@ -518,8 +468,6 @@ function App() {
       )
     );
 
-    // If we're currently in the starred section and the email is being unstarred,
-    // clear the selection to avoid showing an email that's no longer in this section
     if (
       activeItem === "starred" &&
       !email.is_starred &&
@@ -542,19 +490,17 @@ function App() {
   };
 
   const handleMenuToggle = () => {
-    setSidebarOpen(!sidebarOpen);
+    setSidebarCollapsed(!sidebarCollapsed);
   };
 
   const handleSearch = (query: string) => {
-    // setSearchFilter(query)
     dispatch(setFilterSettings({ search: query }));
-    // setSearchQuery(query);
+    setSearchQuery(query);
   };
 
   const handleSectionChange = (section: string) => {
     setActiveItem(section);
-    setSelectedEmail(null); // Clear selected email when changing sections
-    setSidebarOpen(false); // Close sidebar on mobile when selecting item
+    setSelectedEmail(null);
   };
 
   const handleFiltersChange = (newFilters: FilterOptions) => {
@@ -577,30 +523,32 @@ function App() {
   };
 
   const handleSendEmail = async (emailData: ComposeEmailData) => {
-    // In a real app, you would make an API call here
     await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    // Show success message
-    // alert("Email sent successfully!");
-
-    // Close compose panel
+    
+    api.success({
+      message: 'Email Sent',
+      description: 'Your email has been sent successfully!',
+      placement: 'topRight',
+    });
+    
     setComposePanelOpen(false);
   };
 
   const handleSaveDraft = async (emailData: ComposeEmailData) => {
-    // In a real app, you would make an API call here
     await new Promise((resolve) => setTimeout(resolve, 500));
 
-    // Show success message
     if (
       emailData.to.length > 0 ||
       emailData.subject.trim() ||
       emailData.body.trim()
     ) {
-      // alert("Draft saved successfully!");
+      api.info({
+        message: 'Draft Saved',
+        description: 'Your draft has been saved successfully!',
+        placement: 'topRight',
+      });
     }
 
-    // Close compose panel
     setComposePanelOpen(false);
   };
 
@@ -626,13 +574,9 @@ function App() {
         label.id === labelId ? { ...label, ...updates } : label
       )
     );
-
-    // In a real app, you would make an API call here
-    // console.log("Updating label:", labelId, updates);
   };
 
   const handleDeleteLabel = (labelId: string) => {
-    // Remove label from all emails
     setEmails((prev) =>
       prev?.map((email) => ({
         ...email,
@@ -641,16 +585,11 @@ function App() {
       }))
     );
 
-    // Remove label from labels list
     setCustomLabels((prev) => prev.filter((label) => label.id !== labelId));
 
-    // If currently viewing this label, switch to inbox
     if (activeItem === `custom-label-${labelId}`) {
       setActiveItem("inbox");
     }
-
-    // In a real app, you would make an API call here
-    // console.log("Deleting label:", labelId);
   };
 
   const handleEmailLabelsChange = (emailIds: string[], labelIds: string[]) => {
@@ -662,14 +601,10 @@ function App() {
       )
     );
 
-    // Clear checked emails after label operation
     setCheckedEmails(new Set());
-
-    // console.log(`Updated labels for ${emailIds.length} emails:`, labelIds);
   };
 
   const handleBulkMarkAsRead = (emailIds: string[], isRead: boolean) => {
-    // Store previous state for undo
     const previousState = emails
       ?.filter((email) => emailIds.includes(email.message_id))
       ?.map((email) => ({ id: email.message_id, is_read: email.is_read }));
@@ -688,16 +623,10 @@ function App() {
       )
     );
 
-    // Clear checked emails after action
     setCheckedEmails(new Set());
-
-    // console.log(
-    //   `Marked ${emailIds.length} emails as ${isRead ? "read" : "unread"}`
-    // );
   };
 
   const handleBulkDelete = (emailIds: string[]) => {
-    // Store previous state for undo
     const previousState = emails?.filter((email) =>
       emailIds.includes(email.message_id)
     );
@@ -712,10 +641,8 @@ function App() {
       .filter((email) => emailIds.includes(email.message_id))
       .map((email) => ({ ...email, is_deleted: true }));
 
-    // Add them to deletedEmails
     setDeletedEmails((prev) => [...prev, ...emailsToDelete]);
 
-    // Also update the emails state to mark them as deleted
     setEmails((prevEmails) =>
       prevEmails.map((email) =>
         emailIds.includes(email.message_id)
@@ -724,13 +651,10 @@ function App() {
       )
     );
 
-    // Clear checked emails and selected email if deleted
     setCheckedEmails(new Set());
     if (selectedEmail && emailIds.includes(selectedEmail.message_id)) {
       setSelectedEmail(null);
     }
-
-    // console.log(`Deleted ${emailIds} emails`);
   };
 
   const handleSelectAll = () => {
@@ -743,14 +667,11 @@ function App() {
   };
 
   const handleDeleteEmail = (emailId: string) => {
-    // Find the email to delete
     const emailToDelete = emails?.find((email) => email.message_id === emailId);
     if (!emailToDelete) return;
 
-    // Move email to deleted emails
     setDeletedEmails((prev) => [...prev, emailToDelete]);
 
-    // Remove from active emails
     setEmails((prevEmails) =>
       prevEmails?.map((email) =>
         email.message_id === emailId
@@ -759,59 +680,45 @@ function App() {
       )
     );
 
-    // Clear selection if this email was selected
     if (selectedEmail && selectedEmail.message_id === emailId) {
       setSelectedEmail(null);
     }
-
-    // console.log(`Email moved to bin: ${emailToDelete.subject}`);
   };
 
   const handleRestoreEmail = (emailId: string) => {
-    // Find the email to restore
     const emailToRestore = deletedEmails.find(
       (email) => email.message_id === emailId
     );
     if (!emailToRestore) return;
 
-    // Move email back to active emails
     setEmails((prev: any) => [...prev, emailToRestore]);
 
-    // Remove from deleted emails
     setDeletedEmails((prev) =>
       prev.filter((email) => email.message_id !== emailId)
     );
 
-    // Clear selection if this email was selected
     if (selectedEmail && selectedEmail.message_id === emailId) {
       setSelectedEmail(null);
     }
-
-    console.log(`Email restored from bin: ${emailToRestore.subject}`);
   };
 
   const handleBulkRestore = (emailIds: string[]) => {
-    // Find emails to restore
     const emailsToRestore = deletedEmails.filter((email) =>
       emailIds.includes(email.message_id)
     );
 
-    // Move emails back to active emails
     setEmails((prev: any) => [...prev, ...emailsToRestore]);
 
-    // Remove from deleted emails
     setDeletedEmails((prev) =>
       prev.filter((email) => !emailIds.includes(email.message_id))
     );
 
-    // Clear checked emails and selected email if restored
     setCheckedEmails(new Set());
     if (selectedEmail && emailIds.includes(selectedEmail.message_id)) {
       setSelectedEmail(null);
     }
-
-    // console.log(`Restored ${emailIds.length} emails from bin`);
   };
+
   const handleUndo = () => {
     if (!lastAction) return;
 
@@ -849,7 +756,6 @@ function App() {
     }
 
     setLastAction(null);
-    // console.log("Undid last action");
   };
 
   const getAiReplyState = (emailId: string): any => {
@@ -863,7 +769,6 @@ function App() {
     );
   };
 
-  // Helper function to update AI reply state for specific email
   const updateAiReplyState = (emailId: string, newState: any) => {
     setAiReplyStates((prev: any) => ({
       ...prev,
@@ -884,18 +789,11 @@ function App() {
       replyType: replyType as any,
     });
 
-    // const generateAiReply = async (email: any, tone: string = 'professional', replyType: string = 'reply') => {
-    //   setAiReplyStates(prev => ({ ...prev, isGenerating: true }));
-
-    // Simulate AI generation delay
     await new Promise((resolve) => setTimeout(resolve, 2000));
 
-    // console.log(email);
-    // Generate contextual reply based on email content and tone
     let generatedReply = "";
     const foundEmail = emails[emails.length - 1];
 
-    // Handle different reply types
     if (replyType) {
       generatedReply = foundEmail?.ai_response;
     }
@@ -909,152 +807,151 @@ function App() {
     }));
   };
 
-  const getContextualResponse = (email: any) => {
-    const content = email[email.length - 1]?.body_plain?.toLowerCase();
-
-    if (content.includes("meeting") || content.includes("schedule")) {
-      return "I've reviewed the meeting details and will check my calendar. I'll get back to you shortly with my availability.";
-    } else if (content.includes("project") || content.includes("timeline")) {
-      return "I understand the project requirements and timeline. I'll review the details and provide an update by end of week.";
-    } else if (content.includes("review") || content.includes("feedback")) {
-      return "Thank you for sharing this information. I'll review the details and provide my feedback within the next 2 business days.";
-    } else if (content.includes("urgent") || content.includes("asap")) {
-      return "I understand this is urgent. I'll prioritize this and get back to you as soon as possible.";
-    } else {
-      return "I've received your message and will address the points raised. I'll follow up with you soon.";
-    }
-  };
-
   return (
-    <div className=" flex flex-col bg-gray-50">
-      {/* {showNotification && (
-        <div className="fixed top-4 right-4 bg-green-100 text-green-800 px-4 py-2 rounded shadow-md text-sm transition-opacity duration-300">
-          🔔 You have {differentNotificationCount} new messages
-        </div>
-      )} */}
-      <Header
-        onMenuToggle={handleMenuToggle}
-        onSearch={handleSearch}
-        onFiltersChange={handleFiltersChange}
-        filters={filters}
-        checkedEmails={checkedEmails}
-        onBulkMarkAsRead={handleBulkMarkAsRead}
-        onBulkDelete={handleBulkDelete}
-        onSelectAll={handleSelectAll}
-        onUnselectAll={handleUnselectAll}
-        onUndo={handleUndo}
-        hasSelection={checkedEmails.size > 0}
-        onComposeClick={handleComposeOpen}
-      />
-
-      <div className="flex-1 flex overflow-hidden">
-        <Sidebar
-          activeItem={activeItem}
-          onItemSelect={handleSectionChange}
-          isOpen={sidebarOpen}
+    <ConfigProvider
+      theme={{
+        algorithm: theme.defaultAlgorithm,
+        token: {
+          colorPrimary: '#1890ff',
+          borderRadius: 6,
+          fontFamily: 'Open Sans, sans-serif',
+        },
+      }}
+    >
+      {contextHolder}
+      <Layout style={{ height: '100vh' }}>
+        <Header
+          onMenuToggle={handleMenuToggle}
+          onSearch={handleSearch}
+          onFiltersChange={handleFiltersChange}
+          filters={filters}
+          checkedEmails={checkedEmails}
+          onBulkMarkAsRead={handleBulkMarkAsRead}
+          onBulkDelete={handleBulkDelete}
+          onSelectAll={handleSelectAll}
+          onUnselectAll={handleUnselectAll}
+          onUndo={handleUndo}
+          hasSelection={checkedEmails.size > 0}
           onComposeClick={handleComposeOpen}
-          customLabels={customLabels}
-          onManageLabels={() => setLabelManagerOpen(true)}
-          emailCounts={emailCounts}
-          // onClose={handleCloseSidebar}
-          // onWidthChange={setSidebarWidth}
         />
 
-        {getMailListResponse?.isSuccess && (
-          <div className="flex-1 flex min-w-0">
-            {isFullPageView ? (
-              <ConversationThread
-                email={selectedEmail}
-                onClose={() => setSelectedEmail(null)}
-                onBack={handleBackToList}
-                isFullPage={true}
-                aiReplyState={getAiReplyState(selectedEmail?.message_id || "")}
-                onGenerateAiReply={generateAiReply}
-                onAiReplyStateChange={(newState) =>
-                  selectedEmail?.message_id &&
-                  updateAiReplyState(selectedEmail.message_id, newState)
-                }
-                customLabels={customLabels}
-                onEmailLabelsChange={handleEmailLabelsChange}
-                onCreateLabel={handleCreateLabel}
-                onDeleteEmail={handleDeleteEmail}
-                onRestoreEmail={handleRestoreEmail}
-                activeSection={activeItem}
-              />
-            ) : (
-              <div className="flex flex-1 h-full">
-                {getMailListResponse?.isLoading ||
-                getMailListResponse?.isFetching ? (
-                  <NavbarSkeleton />
+        <Layout>
+          <Sider
+            width={250}
+            collapsed={sidebarCollapsed}
+            onCollapse={setSidebarCollapsed}
+            style={{
+              background: '#fff',
+              borderRight: '1px solid #f0f0f0',
+            }}
+            breakpoint="lg"
+            collapsedWidth={0}
+          >
+            <Sidebar
+              activeItem={activeItem}
+              onItemSelect={handleSectionChange}
+              isOpen={!sidebarCollapsed}
+              onComposeClick={handleComposeOpen}
+              customLabels={customLabels}
+              onManageLabels={() => setLabelManagerOpen(true)}
+              emailCounts={emailCounts}
+            />
+          </Sider>
+
+          <Layout>
+            {getMailListResponse?.isSuccess && (
+              <Content style={{ display: 'flex', height: '100%' }}>
+                {isFullPageView ? (
+                  <ConversationThread
+                    email={selectedEmail}
+                    onClose={() => setSelectedEmail(null)}
+                    onBack={handleBackToList}
+                    isFullPage={true}
+                    aiReplyState={getAiReplyState(selectedEmail?.message_id || "")}
+                    onGenerateAiReply={generateAiReply}
+                    onAiReplyStateChange={(newState) =>
+                      selectedEmail?.message_id &&
+                      updateAiReplyState(selectedEmail.message_id, newState)
+                    }
+                    customLabels={customLabels}
+                    onEmailLabelsChange={handleEmailLabelsChange}
+                    onCreateLabel={handleCreateLabel}
+                    onDeleteEmail={handleDeleteEmail}
+                    onRestoreEmail={handleRestoreEmail}
+                    activeSection={activeItem}
+                  />
                 ) : (
-                  <div className="flex-shrink-0">
-                    <EmailList
-                      emails={filteredEmails}
-                      selectedEmailId={selectedEmail?.message_id || null}
-                      onEmailSelect={handleEmailSelect}
-                      onStarToggle={handleStarToggle}
-                      onCheckToggle={handleCheckToggle}
-                      checkedEmails={checkedEmails}
-                      activeSection={activeItem}
-                      customLabels={customLabels}
-                      onEmailLabelsChange={handleEmailLabelsChange}
-                      onCreateLabel={handleCreateLabel}
-                      onBulkMarkAsRead={handleBulkMarkAsRead}
-                      onBulkDelete={handleBulkDelete}
-                      onBulkRestore={handleBulkRestore}
-                      onSelectAll={handleSelectAll}
-                      onUnselectAll={handleUnselectAll}
-                      setEmails={setEmails}
-                      readStatus={filters?.readStatus}
-                      searchFilter={searchFilter}
-                    />
-                  </div>
+                  <>
+                    <div style={{ width: '400px', borderRight: '1px solid #f0f0f0' }}>
+                      <EmailList
+                        emails={filteredEmails}
+                        selectedEmailId={selectedEmail?.message_id || null}
+                        onEmailSelect={handleEmailSelect}
+                        onStarToggle={handleStarToggle}
+                        onCheckToggle={handleCheckToggle}
+                        checkedEmails={checkedEmails}
+                        activeSection={activeItem}
+                        customLabels={customLabels}
+                        onEmailLabelsChange={handleEmailLabelsChange}
+                        onCreateLabel={handleCreateLabel}
+                        onBulkMarkAsRead={handleBulkMarkAsRead}
+                        onBulkDelete={handleBulkDelete}
+                        onBulkRestore={handleBulkRestore}
+                        onSelectAll={handleSelectAll}
+                        onUnselectAll={handleUnselectAll}
+                        setEmails={setEmails}
+                        readStatus={filters?.readStatus}
+                        searchFilter={searchFilter}
+                      />
+                    </div>
+
+                    <div style={{ flex: 1 }}>
+                      <ConversationThread
+                        email={selectedEmail}
+                        onClose={() => setSelectedEmail(null)}
+                        isFullPage={false}
+                        aiReplyState={getAiReplyState(selectedEmail?.id || "")}
+                        onGenerateAiReply={generateAiReply}
+                        onAiReplyStateChange={(newState) =>
+                          selectedEmail?.message_id &&
+                          updateAiReplyState(selectedEmail.message_id, newState)
+                        }
+                        customLabels={customLabels}
+                        onEmailLabelsChange={handleEmailLabelsChange}
+                        onCreateLabel={handleCreateLabel}
+                        onDeleteEmail={handleDeleteEmail}
+                        onRestoreEmail={handleRestoreEmail}
+                        activeSection={activeItem}
+                        onStarToggle={handleStarToggle}
+                      />
+                    </div>
+                  </>
                 )}
-
-                <ConversationThread
-                  email={selectedEmail}
-                  onClose={() => setSelectedEmail(null)}
-                  isFullPage={false}
-                  aiReplyState={getAiReplyState(selectedEmail?.id || "")}
-                  onGenerateAiReply={generateAiReply}
-                  onAiReplyStateChange={(newState) =>
-                    selectedEmail?.message_id &&
-                    updateAiReplyState(selectedEmail.message_id, newState)
-                  }
-                  customLabels={customLabels}
-                  onEmailLabelsChange={handleEmailLabelsChange}
-                  onCreateLabel={handleCreateLabel}
-                  onDeleteEmail={handleDeleteEmail}
-                  onRestoreEmail={handleRestoreEmail}
-                  activeSection={activeItem}
-                  onStarToggle={handleStarToggle}
-                />
-              </div>
+              </Content>
             )}
-          </div>
-        )}
-      </div>
+          </Layout>
+        </Layout>
 
-      <LabelManager
-        isOpen={labelManagerOpen}
-        onClose={() => setLabelManagerOpen(false)}
-        labels={customLabels}
-        onCreateLabel={handleCreateLabel}
-        onUpdateLabel={handleUpdateLabel}
-        onDeleteLabel={handleDeleteLabel}
-      />
-
-      {/* Compose Panel - Fixed overlay on the right side */}
-      {composePanelOpen && (
-        <ComposeModal
-          isOpen={composePanelOpen}
-          onClose={handleComposeClose}
-          onSend={handleSendEmail}
-          onSaveDraft={handleSaveDraft}
-          isPanel={true}
+        <LabelManager
+          isOpen={labelManagerOpen}
+          onClose={() => setLabelManagerOpen(false)}
+          labels={customLabels}
+          onCreateLabel={handleCreateLabel}
+          onUpdateLabel={handleUpdateLabel}
+          onDeleteLabel={handleDeleteLabel}
         />
-      )}
-    </div>
+
+        {composePanelOpen && (
+          <ComposeModal
+            isOpen={composePanelOpen}
+            onClose={handleComposeClose}
+            onSend={handleSendEmail}
+            onSaveDraft={handleSaveDraft}
+            isPanel={true}
+          />
+        )}
+      </Layout>
+    </ConfigProvider>
   );
 }
 

@@ -1,6 +1,20 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Tag, X, Plus, Check } from 'lucide-react';
+import {
+  Select,
+  Tag,
+  Button,
+  Input,
+  Space,
+  ColorPicker,
+  Typography,
+} from 'antd';
+import {
+  PlusOutlined,
+  CheckOutlined,
+} from '@ant-design/icons';
 import { CustomLabel } from '../types/email';
+
+const { Text } = Typography;
 
 interface LabelSelectorProps {
   selectedLabels: string[];
@@ -19,32 +33,15 @@ const LabelSelector: React.FC<LabelSelectorProps> = ({
   onCreateLabel,
   placeholder = "Add labels...",
   className = "",
-  maxHeight = "max-h-48",
+  maxHeight = "200px",
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchValue, setSearchValue] = useState('');
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [newLabelName, setNewLabelName] = useState('');
-  const [newLabelColor, setNewLabelColor] = useState('#3B82F6');
-  const containerRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
-        setShowCreateForm(false);
-        setSearchQuery('');
-        setNewLabelName('');
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  const [newLabelColor, setNewLabelColor] = useState('#1890ff');
 
   const filteredLabels = availableLabels.filter(label =>
-    label.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
+    label.name.toLowerCase().includes(searchValue.toLowerCase()) &&
     !selectedLabels.includes(label.id)
   );
 
@@ -60,10 +57,6 @@ const LabelSelector: React.FC<LabelSelectorProps> = ({
     }
   };
 
-  const handleRemoveLabel = (labelId: string) => {
-    onLabelsChange(selectedLabels.filter(id => id !== labelId));
-  };
-
   const handleCreateNewLabel = () => {
     if (!newLabelName.trim() || !onCreateLabel) return;
 
@@ -72,10 +65,8 @@ const LabelSelector: React.FC<LabelSelectorProps> = ({
     );
 
     if (existingLabel) {
-      // If label exists, just select it
       handleLabelToggle(existingLabel.id);
     } else {
-      // Create new label
       onCreateLabel({
         name: newLabelName.trim(),
         color: newLabelColor,
@@ -85,175 +76,114 @@ const LabelSelector: React.FC<LabelSelectorProps> = ({
 
     setNewLabelName('');
     setShowCreateForm(false);
-    setSearchQuery('');
+    setSearchValue('');
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      if (showCreateForm) {
-        handleCreateNewLabel();
-      } else if (searchQuery.trim() && onCreateLabel) {
-        setNewLabelName(searchQuery.trim());
-        setShowCreateForm(true);
-      }
-    } else if (e.key === 'Escape') {
-      setIsOpen(false);
-      setShowCreateForm(false);
-      setSearchQuery('');
-    }
+  const options = filteredLabels.map(label => ({
+    value: label.id,
+    label: (
+      <Space>
+        <div
+          style={{
+            width: 8,
+            height: 8,
+            borderRadius: '50%',
+            backgroundColor: label.color,
+          }}
+        />
+        <span>{label.name}</span>
+        {label.description && (
+          <Text type="secondary" style={{ fontSize: 11 }}>
+            - {label.description}
+          </Text>
+        )}
+      </Space>
+    ),
+  }));
+
+  const tagRender = (props: any) => {
+    const { label, value, closable, onClose } = props;
+    const labelObj = availableLabels.find(l => l.id === value);
+    
+    if (!labelObj) return null;
+
+    return (
+      <Tag
+        color={labelObj.color}
+        closable={closable}
+        onClose={onClose}
+        style={{ marginRight: 3 }}
+      >
+        {labelObj.name}
+      </Tag>
+    );
   };
 
   return (
-    <div ref={containerRef} className={`relative ${className}`}>
-      {/* Selected Labels Display */}
-      <div
-        onClick={() => {
-          setIsOpen(true);
-          setTimeout(() => inputRef.current?.focus(), 0);
-        }}
-        className="min-h-[2.5rem] p-2 border border-gray-300 rounded-lg cursor-text focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500 transition-all"
-      >
-        <div className="flex flex-wrap items-center gap-2">
-          {selectedLabelObjects.map((label) => (
-            <span
-              key={label.id}
-              className="inline-flex items-center px-2 py-1 rounded-md text-sm font-medium"
-              style={{
-                backgroundColor: `${label.color}20`,
-                color: label.color,
-                border: `1px solid ${label.color}40`,
-              }}
-            >
-              <div
-                className="w-2 h-2 rounded-full mr-1"
-                style={{ backgroundColor: label.color }}
-              />
-              {label.name}
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleRemoveLabel(label.id);
-                }}
-                className="ml-1 hover:bg-black hover:bg-opacity-10 rounded-full p-0.5 transition-colors"
-              >
-                <X className="w-3 h-3" />
-              </button>
-            </span>
-          ))}
-          
-          <input
-            ref={inputRef}
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            onKeyDown={handleKeyDown}
-            onFocus={() => setIsOpen(true)}
-            placeholder={selectedLabels.length === 0 ? placeholder : ""}
-            className="flex-1 min-w-[120px] border-none outline-none bg-transparent text-sm"
-          />
-        </div>
-      </div>
-
-      {/* Dropdown */}
-      {isOpen && (
-        <div className={`absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 ${maxHeight} overflow-y-auto`}>
-          {/* Create New Label Form */}
-          {showCreateForm && onCreateLabel && (
-            <div className="p-3 border-b border-gray-100 bg-blue-50">
-              <div className="flex items-center space-x-2 mb-2">
-                <Plus className="w-4 h-4 text-blue-600" />
-                <span className="text-sm font-medium text-blue-900">Create new label</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <input
-                  type="text"
-                  value={newLabelName}
-                  onChange={(e) => setNewLabelName(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                  placeholder="Label name..."
-                  className="flex-1 px-2 py-1 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  autoFocus
-                />
-                <input
-                  type="color"
-                  value={newLabelColor}
-                  onChange={(e) => setNewLabelColor(e.target.value)}
-                  className="w-8 h-8 border border-gray-300 rounded cursor-pointer"
-                />
-                <button
-                  onClick={handleCreateNewLabel}
-                  disabled={!newLabelName.trim()}
-                  className="px-3 py-1 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white rounded text-sm transition-colors"
-                >
-                  <Check className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Available Labels */}
-          <div className="py-1">
-            {filteredLabels.length === 0 && !showCreateForm ? (
-              <div className="px-3 py-2 text-sm text-gray-500 text-center">
-                {searchQuery ? (
-                  <div>
-                    <p>No labels found for "{searchQuery}"</p>
-                    {onCreateLabel && (
-                      <button
-                        onClick={() => {
-                          setNewLabelName(searchQuery);
-                          setShowCreateForm(true);
-                        }}
-                        className="mt-1 text-blue-600 hover:text-blue-700 text-sm"
-                      >
-                        Create "{searchQuery}" label
-                      </button>
-                    )}
-                  </div>
-                ) : (
-                  'No available labels'
-                )}
+    <div className={className}>
+      <Select
+        mode="multiple"
+        placeholder={placeholder}
+        value={selectedLabels}
+        onChange={onLabelsChange}
+        options={options}
+        tagRender={tagRender}
+        style={{ width: '100%' }}
+        searchValue={searchValue}
+        onSearch={setSearchValue}
+        dropdownRender={(menu) => (
+          <div>
+            {menu}
+            {showCreateForm && onCreateLabel ? (
+              <div style={{ padding: 8, borderTop: '1px solid #f0f0f0' }}>
+                <Space direction="vertical" style={{ width: '100%' }}>
+                  <Space>
+                    <PlusOutlined />
+                    <Text strong>Create new label</Text>
+                  </Space>
+                  <Space.Compact style={{ width: '100%' }}>
+                    <Input
+                      placeholder="Label name..."
+                      value={newLabelName}
+                      onChange={(e) => setNewLabelName(e.target.value)}
+                      onPressEnter={handleCreateNewLabel}
+                      autoFocus
+                    />
+                    <ColorPicker
+                      value={newLabelColor}
+                      onChange={(color) => setNewLabelColor(color.toHexString())}
+                      size="small"
+                    />
+                    <Button
+                      type="primary"
+                      icon={<CheckOutlined />}
+                      onClick={handleCreateNewLabel}
+                      disabled={!newLabelName.trim()}
+                    />
+                  </Space.Compact>
+                </div>
               </div>
             ) : (
-              filteredLabels.map((label) => (
-                <button
-                  key={label.id}
-                  onClick={() => handleLabelToggle(label.id)}
-                  className="w-full px-3 py-2 text-left hover:bg-gray-50 transition-colors flex items-center space-x-2"
-                >
-                  <div
-                    className="w-3 h-3 rounded-full"
-                    style={{ backgroundColor: label.color }}
-                  />
-                  <span className="text-sm text-gray-900">{label.name}</span>
-                  {label.description && (
-                    <span className="text-xs text-gray-500 truncate">
-                      - {label.description}
-                    </span>
-                  )}
-                </button>
-              ))
+              searchValue && filteredLabels.length === 0 && onCreateLabel && (
+                <div style={{ padding: 8, borderTop: '1px solid #f0f0f0' }}>
+                  <Button
+                    type="text"
+                    icon={<PlusOutlined />}
+                    onClick={() => {
+                      setNewLabelName(searchValue);
+                      setShowCreateForm(true);
+                    }}
+                    style={{ width: '100%', textAlign: 'left' }}
+                  >
+                    Create "{searchValue}" label
+                  </Button>
+                </div>
+              )
             )}
           </div>
-
-          {/* Create Label Option */}
-          {!showCreateForm && onCreateLabel && searchQuery && filteredLabels.length === 0 && (
-            <div className="border-t border-gray-100">
-              <button
-                onClick={() => {
-                  setNewLabelName(searchQuery);
-                  setShowCreateForm(true);
-                }}
-                className="w-full px-3 py-2 text-left hover:bg-gray-50 transition-colors flex items-center space-x-2 text-blue-600"
-              >
-                <Plus className="w-4 h-4" />
-                <span className="text-sm">Create "{searchQuery}" label</span>
-              </button>
-            </div>
-          )}
-        </div>
-      )}
+        )}
+        maxTagCount="responsive"
+      />
     </div>
   );
 };
