@@ -267,16 +267,6 @@ const Sidebar: React.FC<SidebarProps> = ({
                     <Settings className="w-4 h-4" />
                     <span>Manage labels</span>
                   </button>
-                  <button
-                    onClick={() => {
-                      onManageLabels();
-                      setLabelsExpanded(false);
-                    }}
-                    className="w-full flex items-center space-x-3 px-3 py-2 text-sm text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-colors"
-                  >
-                    <Plus className="w-4 h-4" />
-                    <span>Add label</span>
-                  </button>
                 </div>
               )}
             </div>
