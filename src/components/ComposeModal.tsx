@@ -170,6 +170,9 @@ const ComposeModal: React.FC<ComposeModalProps> = ({
     setEmails: (emails: string[]) => void,
     setInput: (value: string) => void
   ) => {
+    // Always update the input value first to maintain focus
+    setInput(value);
+    
     // Only process email separation when user explicitly adds separators at the end
     if (value.endsWith(",") || value.endsWith(";")) {
       const emailToAdd = value.slice(0, -1).trim();
@@ -177,11 +180,7 @@ const ComposeModal: React.FC<ComposeModalProps> = ({
         const uniqueEmails = [...new Set([...currentEmails, emailToAdd])];
         setEmails(uniqueEmails);
         setInput("");
-      } else {
-        setInput(value);
       }
-    } else {
-      setInput(value);
     }
   };
 
@@ -696,12 +695,18 @@ Best regards`,
                       handleEmailInput(e.target.value, to, setTo, setToInput)
                     }
                     onKeyDown={(e) => {
-                      if (e.key === "Enter") {
+                      if (e.key === "Enter" || e.key === "Tab") {
                         e.preventDefault();
                         if (toInput.trim() && validateEmail(toInput.trim())) {
                           setTo([...to, toInput.trim()]);
                           setToInput("");
                         }
+                      } else if (e.key === "Backspace" && toInput === "" && to.length > 0) {
+                        e.preventDefault();
+                        const newTo = [...to];
+                        const lastEmail = newTo.pop();
+                        setTo(newTo);
+                        setToInput(lastEmail || "");
                       }
                     }}
                     placeholder={
@@ -768,12 +773,18 @@ Best regards`,
                       handleEmailInput(e.target.value, cc, setCc, setCcInput)
                     }
                     onKeyDown={(e) => {
-                      if (e.key === "Enter") {
+                      if (e.key === "Enter" || e.key === "Tab") {
                         e.preventDefault();
                         if (ccInput.trim() && validateEmail(ccInput.trim())) {
                           setCc([...cc, ccInput.trim()]);
                           setCcInput("");
                         }
+                      } else if (e.key === "Backspace" && ccInput === "" && cc.length > 0) {
+                        e.preventDefault();
+                        const newCc = [...cc];
+                        const lastEmail = newCc.pop();
+                        setCc(newCc);
+                        setCcInput(lastEmail || "");
                       }
                     }}
                     placeholder="Enter CC email addresses..."
@@ -816,12 +827,18 @@ Best regards`,
                       handleEmailInput(e.target.value, bcc, setBcc, setBccInput)
                     }
                     onKeyDown={(e) => {
-                      if (e.key === "Enter") {
+                      if (e.key === "Enter" || e.key === "Tab") {
                         e.preventDefault();
                         if (bccInput.trim() && validateEmail(bccInput.trim())) {
                           setBcc([...bcc, bccInput.trim()]);
                           setBccInput("");
                         }
+                      } else if (e.key === "Backspace" && bccInput === "" && bcc.length > 0) {
+                        e.preventDefault();
+                        const newBcc = [...bcc];
+                        const lastEmail = newBcc.pop();
+                        setBcc(newBcc);
+                        setBccInput(lastEmail || "");
                       }
                     }}
                     placeholder="Enter BCC email addresses..."
