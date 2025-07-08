@@ -28,7 +28,7 @@ const Header: React.FC<HeaderProps> = ({
   onSearch,
   onFiltersChange,
   filters,
-  onComposeClick
+  onComposeClick,
 }) => {
   const [searchQuery, setSearchQuery] = useState<any>("");
   const [showSettingsDropdown, setShowSettingsDropdown] = useState(false);
@@ -106,6 +106,12 @@ const Header: React.FC<HeaderProps> = ({
   return (
     <header className="bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between relative z-50">
       <div className="flex items-center space-x-4">
+        <button
+          onClick={onMenuToggle}
+          className="p-2 hover:bg-gray-100 rounded-lg transition-colors md:hidden"
+        >
+          <Menu className="w-5 h-5" />
+        </button>
         {/* Enhanced Menu Toggle Button */}
         {/* <button
           onClick={onMenuToggle}
@@ -135,7 +141,7 @@ const Header: React.FC<HeaderProps> = ({
 
       <div className="flex-1 max-w-2xl mx-8">
         <div className="flex items-center space-x-3">
-<div className="relative flex-1">
+          <div className="relative flex-1">
             {/* Search Icon Button */}
             <button
               type="button"

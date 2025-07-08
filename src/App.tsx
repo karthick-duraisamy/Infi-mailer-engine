@@ -11,6 +11,7 @@ import { FilterOptions } from "./components/EmailFilters";
 import { useLazyGetMailListResponseQuery } from "./service/inboxService";
 import { useSelector, useDispatch } from "react-redux";
 import { setFilterSettings } from "./store/filterSlice";
+import Sidebar from "./components/Sidebar";
 
 function App() {
   const [activeItem, setActiveItem] = useState("inbox");
@@ -52,7 +53,7 @@ function App() {
       );
       localStorage.setItem("project", "4");
     }
-  }, []);
+  }, []);const [sidebarWidth, setSidebarWidth] = useState(64);
 
   const [aiReplyStates, setAiReplyStates] = useState({
     isGenerating: false,
@@ -947,7 +948,7 @@ function App() {
       />
 
       <div className="flex-1 flex overflow-hidden">
-        {/* <Sidebar
+        <Sidebar
           activeItem={activeItem}
           onItemSelect={handleSectionChange}
           isOpen={sidebarOpen}
@@ -956,14 +957,11 @@ function App() {
           onManageLabels={() => setLabelManagerOpen(true)}
           emailCounts={emailCounts}
           // onClose={handleCloseSidebar}
-          onWidthChange={setSidebarWidth}
-        /> */}
+          // onWidthChange={setSidebarWidth}
+        />
 
         {getMailListResponse?.isSuccess && (
-          <div
-            className="flex-1 flex min-w-0 transition-all duration-200"
-            // style={{ marginLeft: sidebarWidth }}
-          >
+          <div className="flex-1 flex min-w-0">
             {isFullPageView ? (
               <ConversationThread
                 email={selectedEmail}
