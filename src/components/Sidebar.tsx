@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import {
   Inbox,
   Star,
-  Clock,
+  Send,
   Trash2,
   Tag,
   ChevronDown,
@@ -40,10 +40,10 @@ const Sidebar: React.FC<SidebarProps> = ({
     },
     { id: "starred", label: "Starred", icon: Star, count: emailCounts.starred },
     {
-      id: "snoozed",
-      label: "Snoozed",
-      icon: Clock,
-      count: emailCounts.snoozed,
+      id: "sent",
+      label: "Sent",
+      icon: Send,
+      count: emailCounts.sent,
     },
     { id: "bin", label: "Bin", icon: Trash2, count: emailCounts.bin },
   ];

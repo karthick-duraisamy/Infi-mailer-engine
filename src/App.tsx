@@ -154,7 +154,7 @@ function App() {
         (email) => (!email.is_read || email.is_read) && !email.is_deleted
       ).length || 0;
     counts.starred = emails?.filter((email) => email.is_starred).length || 0;
-    counts.snoozed = 0; // Mock data doesn't have snoozed emails
+    counts.sent = emails?.filter((email) => email.folder === "[Gmail]/Sent Mail").length || 0;
     counts.bin = deletedEmails.filter((email) => email.is_deleted).length || 0;
 
     // Custom labels - show unread count
@@ -359,9 +359,8 @@ function App() {
       case "starred":
         filtered = conversations?.filter((email) => email.is_starred);
         break;
-      case "snoozed":
-        // For demo, show empty snoozed
-        filtered = [];
+      case "sent":
+        filtered = conversations?.filter((email) => email.folder === "[Gmail]/Sent Mail");
         break;
       case "bin":
         // Show deleted emails
