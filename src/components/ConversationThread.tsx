@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import { Email, CustomLabel } from "../types/email";
 import EntitiesPopover from "./EntitiesPopover";
+import SummaryModal from "./SummaryModal";
 import {
   useGetAIReplyResponseMutation,
   useLazyGetConversationDetailsQuery,
@@ -92,6 +93,7 @@ const ConversationThread: React.FC<ConversationThreadProps> = ({
   const [showEntitiesPopover, setShowEntitiesPopover] = useState(false);
   const [showMoreMenu, setShowMoreMenu] = useState(false);
   const [entitiesInfo, setEntitiesInfo] = useState<any[]>([]);
+  const [showSummaryModal, setShowSummaryModal] = useState(false);
 
   // Refs for auto-scrolling
   const aiReplyRef = useRef<HTMLDivElement>(null);
@@ -1173,6 +1175,15 @@ const ConversationThread: React.FC<ConversationThreadProps> = ({
                     Entities
                   </span>
                 </button>
+                <button
+                  onClick={() => setShowSummaryModal(true)}
+                  className="flex items-center space-x-2 px-3 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+                >
+                  <Sparkles className="w-4 h-4 mr-1" />
+                  <span className="text-sm text-gray-600 hover:text-gray-800">
+                    Summarize
+                  </span>
+                </button>
                 {activeSection === "bin" && onRestoreEmail ? (
                   <button
                     onClick={() => onRestoreEmail(email.message_id)}
@@ -1835,6 +1846,14 @@ const ConversationThread: React.FC<ConversationThreadProps> = ({
             onClose={() => setShowEntitiesPopover(false)}
             triggerRef={entitiesButtonPosition}
             entitiesInfo={entitiesInfo}
+          />
+
+          {/* Summary Modal */}
+          <SummaryModal
+            isOpen={showSummaryModal}
+            onClose={() => setShowSummaryModal(false)}
+            conversationData={msgData}
+            subject={email.subject}
           />
         </div>
       )}
