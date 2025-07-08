@@ -947,19 +947,18 @@ function App() {
         onComposeClick={handleComposeOpen}
       />
 
-      <div className="flex-1 flex overflow-hidden">
-        <Sidebar
-          activeItem={activeItem}
-          onItemSelect={handleSectionChange}
-          isOpen={sidebarOpen}
-          onComposeClick={handleComposeOpen}
-          customLabels={customLabels}
-          onManageLabels={() => setLabelManagerOpen(true)}
-          emailCounts={emailCounts}
-          // onClose={handleCloseSidebar}
-          // onWidthChange={setSidebarWidth}
-        />
+      {/* Top Navigation */}
+      <Sidebar
+        activeItem={activeItem}
+        onItemSelect={handleSectionChange}
+        isOpen={sidebarOpen}
+        onComposeClick={handleComposeOpen}
+        customLabels={customLabels}
+        onManageLabels={() => setLabelManagerOpen(true)}
+        emailCounts={emailCounts}
+      />
 
+      <div className="flex-1 flex overflow-hidden">
         {getMailListResponse?.isSuccess && (
           <div className="flex-1 flex min-w-0">
             {isFullPageView ? (
