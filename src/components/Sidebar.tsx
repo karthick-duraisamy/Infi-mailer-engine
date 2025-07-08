@@ -52,10 +52,10 @@ const Sidebar: React.FC<SidebarProps> = ({
   const [isCorporateOpen, setIsCorporateOpen] = useState(false);
 
   const intentLabels = customLabels.filter(
-    (label) => label.category === "intent"
+    (label) => label.category === "intent",
   );
   const corporateLabels = customLabels.filter(
-    (label) => label.category === "corporate"
+    (label) => label.category === "corporate",
   );
 
   const getLabelCount = (labelId: string) => {
