@@ -1,5 +1,6 @@
-@import '~antd/dist/reset.css';
-
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 @font-face {
   font-family: 'Open Sans';
   src: url('../public/assets/fonts/OpenSans/OpenSans-Regular.woff2') format('woff2');
@@ -22,84 +23,27 @@
 body {
   font-family: 'Open Sans', sans-serif, Arial;
   font-weight: 400;
-  background-color: #f5f5f5;
+  background-color: #f2f5f8;
+}
+/* Thin scrollbar styles */
+.thin-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
 }
 
-/* Custom scrollbar styles for Ant Design */
-.ant-layout-sider-children::-webkit-scrollbar,
-.ant-list::-webkit-scrollbar {
+.thin-scrollbar::-webkit-scrollbar {
   width: 6px;
 }
 
-.ant-layout-sider-children::-webkit-scrollbar-track,
-.ant-list::-webkit-scrollbar-track {
+.thin-scrollbar::-webkit-scrollbar-track {
   background: transparent;
 }
 
-.ant-layout-sider-children::-webkit-scrollbar-thumb,
-.ant-list::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.1);
+.thin-scrollbar::-webkit-scrollbar-thumb {
+  background: transparent;
   border-radius: 3px;
 }
 
-.ant-layout-sider-children::-webkit-scrollbar-thumb:hover,
-.ant-list::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.2);
-}
-
-/* Custom styles for email list */
-.email-list-item {
-  border-bottom: 1px solid #f0f0f0;
-  transition: background-color 0.2s;
-}
-
-.email-list-item:hover {
-  background-color: #fafafa;
-}
-
-.email-list-item.selected {
-  background-color: #e6f7ff;
-  border-right: 3px solid #1890ff;
-}
-
-.email-list-item.unread {
-  background-color: #f6ffed;
-}
-
-/* Custom styles for conversation thread */
-.conversation-message {
-  margin-bottom: 16px;
-  padding: 16px;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.conversation-message.ai-reply {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-}
-
-/* Custom styles for compose modal */
-.compose-modal .ant-modal-content {
-  padding: 0;
-}
-
-.compose-modal .ant-modal-header {
-  border-bottom: 1px solid #f0f0f0;
-  padding: 16px 24px;
-}
-
-.compose-modal .ant-modal-body {
-  padding: 0;
-}
-
-/* Custom styles for signature setup */
-.signature-preview {
-  background: #fafafa;
-  border: 1px solid #d9d9d9;
-  border-radius: 6px;
-  padding: 12px;
-  min-height: 120px;
-  white-space: pre-wrap;
+.thin-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.3);
 }

@@ -1,37 +1,18 @@
 import React, { useState, useRef, useEffect } from "react";
 import {
-  Modal,
-  Form,
-  Input,
-  Button,
-  Space,
+  X,
+  Send,
+  Save,
+  Paperclip,
+  Users,
+  Eye,
+  EyeOff,
   Upload,
-  Tag,
-  Select,
-  Card,
-  Typography,
-  Divider,
-  ColorPicker,
-  Spin,
-  message,
-} from "antd";
-import {
-  CloseOutlined,
-  SendOutlined,
-  SaveOutlined,
-  PaperClipOutlined,
-  UserAddOutlined,
-  EyeOutlined,
-  EyeInvisibleOutlined,
-  UploadOutlined,
-  DeleteOutlined,
-  StarOutlined,
-  ReloadOutlined,
-  ThunderboltOutlined,
-} from "@ant-design/icons";
-
-const { TextArea } = Input;
-const { Text } = Typography;
+  Trash2,
+  Sparkles,
+  RotateCcw,
+  Wand2,
+} from "lucide-react";
 
 interface ComposeModalProps {
   isOpen: boolean;
@@ -74,12 +55,40 @@ const ComposeModal: React.FC<ComposeModalProps> = ({
   initialData,
   isPanel = false,
 }) => {
-  const [form] = Form.useForm();
+  const [to, setTo] = useState<string[]>(initialData?.to || []);
+  const [cc, setCc] = useState<string[]>(initialData?.cc || []);
+  const [bcc, setBcc] = useState<string[]>(initialData?.bcc || []);
+  const [subject, setSubject] = useState(initialData?.subject || "");
+  const [body, setBody] = useState(initialData?.body || "");
   const [attachments, setAttachments] = useState<Attachment[]>([]);
   const [showCc, setShowCc] = useState(false);
   const [showBcc, setShowBcc] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSending, setIsSending] = useState(false);
   const [isSavingDraft, setIsSavingDraft] = useState(false);
+  const [toInput, setToInput] = useState("");
+  const [ccInput, setCcInput] = useState("");
+  const [bccInput, setBccInput] = useState("");
+
+  // Handle click outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        modalRef.current &&
+        !modalRef.current.contains(event.target as Node)
+      ) {
+        onClose();
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen, onClose]);
 
   // AI State
   const [aiState, setAiState] = useState<AIState>({
@@ -91,20 +100,20 @@ const ComposeModal: React.FC<ComposeModalProps> = ({
   });
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
 
   // Auto-save draft functionality
   useEffect(() => {
     if (!isOpen) return;
 
     const autoSaveInterval = setInterval(() => {
-      const values = form.getFieldsValue();
-      if (values.to?.length > 0 || values.subject?.trim() || values.body?.trim()) {
+      if (to.length > 0 || subject.trim() || body.trim()) {
         handleSaveDraft(true); // Silent save
       }
     }, 30000); // Auto-save every 30 seconds
 
     return () => clearInterval(autoSaveInterval);
-  }, [isOpen]);
+  }, [to, subject, body, isOpen]);
 
   // Handle escape key to close modal
   useEffect(() => {
@@ -123,8 +132,69 @@ const ComposeModal: React.FC<ComposeModalProps> = ({
     return emailRegex.test(email.trim());
   };
 
-  const handleFileUpload = (info: any) => {
-    const { fileList } = info;
+  const validateForm = (): boolean => {
+    const newErrors: Record<string, string> = {};
+
+    if (to.length === 0) {
+      newErrors.to = "At least one recipient is required";
+    } else {
+      const invalidEmails = to.filter((email) => !validateEmail(email));
+      if (invalidEmails.length > 0) {
+        newErrors.to = `Invalid email addresses: ${invalidEmails.join(", ")}`;
+      }
+    }
+
+    // Validate CC emails
+    const invalidCcEmails = cc.filter((email) => !validateEmail(email));
+    if (invalidCcEmails.length > 0) {
+      newErrors.cc = `Invalid CC email addresses: ${invalidCcEmails.join(
+        ", "
+      )}`;
+    }
+
+    // Validate BCC emails
+    const invalidBccEmails = bcc.filter((email) => !validateEmail(email));
+    if (invalidBccEmails.length > 0) {
+      newErrors.bcc = `Invalid BCC email addresses: ${invalidBccEmails.join(
+        ", "
+      )}`;
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleEmailInput = (
+    value: string,
+    currentEmails: string[],
+    setEmails: (emails: string[]) => void,
+    setInput: (value: string) => void
+  ) => {
+    // Only process email separation when user explicitly adds separators at the end
+    if (value.endsWith(",") || value.endsWith(";")) {
+      const emailToAdd = value.slice(0, -1).trim();
+      if (emailToAdd && validateEmail(emailToAdd)) {
+        const uniqueEmails = [...new Set([...currentEmails, emailToAdd])];
+        setEmails(uniqueEmails);
+        setInput("");
+      } else {
+        setInput(value);
+      }
+    } else {
+      setInput(value);
+    }
+  };
+
+  const removeEmail = (
+    emailToRemove: string,
+    emails: string[],
+    setEmails: (emails: string[]) => void
+  ) => {
+    setEmails(emails.filter((email) => email !== emailToRemove));
+  };
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(event.target.files || []);
     const maxSize = 25 * 1024 * 1024; // 25MB limit
     const allowedTypes = [
       "application/pdf",
@@ -136,24 +206,24 @@ const ComposeModal: React.FC<ComposeModalProps> = ({
       "text/plain",
     ];
 
-    const validFiles = fileList.filter((file: any) => {
+    const validFiles = files.filter((file) => {
       if (file.size > maxSize) {
-        message.error(`File ${file.name} is too large. Maximum size is 25MB.`);
+        // alert(`File ${file.name} is too large. Maximum size is 25MB.`);
         return false;
       }
       if (!allowedTypes.includes(file.type)) {
-        message.error(`File type ${file.type} is not allowed.`);
+        // alert(`File type ${file.type} is not allowed.`);
         return false;
       }
       return true;
     });
 
-    const newAttachments = validFiles.map((file: any) => ({
-      file: file.originFileObj || file,
-      id: file.uid || Math.random().toString(36).substr(2, 9),
+    const newAttachments = validFiles.map((file) => ({
+      file,
+      id: Math.random().toString(36).substr(2, 9),
     }));
 
-    setAttachments(newAttachments);
+    setAttachments((prev) => [...prev, ...newAttachments]);
   };
 
   const removeAttachment = (id: string) => {
@@ -170,11 +240,8 @@ const ComposeModal: React.FC<ComposeModalProps> = ({
 
   // AI Functions
   const generateAIContent = async (tone: ToneType, regenerate = false) => {
-    const subject = form.getFieldValue('subject');
-    const to = form.getFieldValue('to') || [];
-    
-    if (!subject?.trim()) {
-      message.warning("Please enter a subject first to generate AI content.");
+    if (!subject.trim()) {
+      alert("Please enter a subject first to generate AI content.");
       return;
     }
 
@@ -229,6 +296,16 @@ const ComposeModal: React.FC<ComposeModalProps> = ({
       subjectLower.includes("support")
     ) {
       intent = "request";
+    } else if (
+      subjectLower.includes("proposal") ||
+      subjectLower.includes("offer")
+    ) {
+      intent = "proposal";
+    } else if (
+      subjectLower.includes("reminder") ||
+      subjectLower.includes("deadline")
+    ) {
+      intent = "reminder";
     }
 
     return generateContentByIntentAndTone(intent, tone, recipientName, subject);
@@ -290,6 +367,141 @@ I'm confident that dedicating time to this discussion will yield positive result
 
 Best regards`,
       },
+      followup: {
+        professional: `Dear ${recipientName},
+
+I hope this email finds you well. I wanted to follow up on our previous discussion regarding ${subject.toLowerCase()}.
+
+As discussed, I wanted to provide you with an update on the current status and next steps:
+
+[Key points to address]
+• [Point 1]
+• [Point 2]
+• [Point 3]
+
+Please let me know if you have any questions or if there's anything else you'd like me to address.
+
+Best regards`,
+        friendly: `Hi ${recipientName}!
+
+Hope you're having a great day! Just wanted to circle back on ${subject.toLowerCase()}.
+
+I've been thinking about our conversation and wanted to share a quick update. Things are moving along nicely, and I think you'll be pleased with the progress.
+
+Let me know if you have any questions or if there's anything else I can help with!
+
+Best`,
+        concise: `Hi ${recipientName},
+
+Quick follow-up on ${subject.toLowerCase()}:
+
+• [Update 1]
+• [Update 2]
+• [Next steps]
+
+Let me know if you need anything else.
+
+Thanks`,
+        persuasive: `Dear ${recipientName},
+
+Following up on ${subject.toLowerCase()} - I believe we're at a critical juncture where swift action could maximize our success.
+
+The momentum we've built presents an excellent opportunity to:
+• Capitalize on current market conditions
+• Leverage our competitive advantages
+• Achieve our shared objectives
+
+I recommend we proceed with the next phase immediately. Your prompt response would be greatly appreciated.
+
+Best regards`,
+      },
+      thanks: {
+        professional: `Dear ${recipientName},
+
+I wanted to take a moment to express my sincere gratitude regarding ${subject.toLowerCase()}.
+
+Your [support/assistance/collaboration] has been invaluable, and I truly appreciate the time and effort you've invested. The [outcome/result] exceeded my expectations, and I couldn't have achieved this without your contribution.
+
+Thank you once again for your professionalism and dedication.
+
+Best regards`,
+        friendly: `Hi ${recipientName}!
+
+I just had to reach out and say a huge thank you for ${subject.toLowerCase()}!
+
+You really went above and beyond, and it means so much to me. I'm incredibly grateful for all your help and support. You're absolutely amazing!
+
+Thanks again for everything!
+
+With appreciation`,
+        concise: `Hi ${recipientName},
+
+Thank you for ${subject.toLowerCase()}.
+
+Your help was invaluable and greatly appreciated.
+
+Best regards`,
+        persuasive: `Dear ${recipientName},
+
+Your exceptional contribution to ${subject.toLowerCase()} deserves special recognition.
+
+The impact of your work has been transformative, demonstrating the value of our collaboration. I believe this success positions us perfectly for future opportunities together.
+
+I would welcome the chance to discuss how we can build on this momentum.
+
+With sincere appreciation`,
+      },
+      request: {
+        professional: `Dear ${recipientName},
+
+I hope this email finds you well. I am writing to request your assistance with ${subject.toLowerCase()}.
+
+Specifically, I would appreciate your help with:
+• [Specific request 1]
+• [Specific request 2]
+• [Timeline/deadline]
+
+I understand you have a busy schedule, but your expertise in this area would be invaluable. Please let me know if this is something you would be able to assist with.
+
+Thank you for considering my request.
+
+Best regards`,
+        friendly: `Hi ${recipientName}!
+
+Hope you're doing well! I'm reaching out because I could really use your help with ${subject.toLowerCase()}.
+
+I know you're super busy, but you're honestly the best person I can think of for this. Would you be able to lend a hand? I'd really appreciate any assistance you can provide!
+
+Let me know what you think!
+
+Thanks so much`,
+        concise: `Hi ${recipientName},
+
+I need assistance with ${subject.toLowerCase()}.
+
+Requirements:
+• [Item 1]
+• [Item 2]
+• [Deadline]
+
+Can you help?
+
+Thanks`,
+        persuasive: `Dear ${recipientName},
+
+I have an exciting opportunity that aligns perfectly with your expertise: ${subject.toLowerCase()}.
+
+This request represents a chance to:
+• Showcase your exceptional skills
+• Make a significant impact
+• Contribute to a meaningful outcome
+
+Your unique qualifications make you the ideal person for this. I'm confident that your involvement would ensure success.
+
+Would you be interested in discussing this further?
+
+Best regards`,
+      },
       general: {
         professional: `Dear ${recipientName},
 
@@ -337,7 +549,7 @@ Best regards`,
   };
 
   const handleUseAIContent = () => {
-    form.setFieldValue('body', aiState.generatedContent);
+    setBody(aiState.generatedContent);
     setAiState((prev) => ({ ...prev, showAIPanel: false }));
   };
 
@@ -350,16 +562,16 @@ Best regards`,
   };
 
   const handleSend = async () => {
+    if (!validateForm()) return;
+
+    setIsSending(true);
     try {
-      const values = await form.validateFields();
-      setIsSending(true);
-      
       const emailData: ComposeEmailData = {
-        to: values.to || [],
-        cc: values.cc || [],
-        bcc: values.bcc || [],
-        subject: values.subject || '',
-        body: values.body || '',
+        to,
+        cc,
+        bcc,
+        subject,
+        body,
         attachments: attachments.map((att) => att.file),
       };
 
@@ -376,18 +588,18 @@ Best regards`,
     if (!silent) setIsSavingDraft(true);
 
     try {
-      const values = form.getFieldsValue();
       const emailData: ComposeEmailData = {
-        to: values.to || [],
-        cc: values.cc || [],
-        bcc: values.bcc || [],
-        subject: values.subject || '',
-        body: values.body || '',
+        to,
+        cc,
+        bcc,
+        subject,
+        body,
         attachments: attachments.map((att) => att.file),
       };
 
       await onSaveDraft(emailData);
       if (!silent) {
+        // Show success message or close modal
         handleClose();
       }
     } catch (error) {
@@ -398,43 +610,32 @@ Best regards`,
   };
 
   const handleClose = () => {
-    const values = form.getFieldsValue();
     const hasContent =
-      values.to?.length > 0 || 
-      values.subject?.trim() || 
-      values.body?.trim() || 
-      attachments.length > 0;
+      to.length > 0 || subject.trim() || body.trim() || attachments.length > 0;
 
     if (hasContent) {
-      Modal.confirm({
-        title: 'Unsaved Changes',
-        content: 'You have unsaved changes. Would you like to save this as a draft before closing?',
-        okText: 'Save Draft',
-        cancelText: 'Discard',
-        onOk: () => handleSaveDraft(),
-        onCancel: () => {
-          form.resetFields();
-          setAttachments([]);
-          setShowCc(false);
-          setShowBcc(false);
-          setAiState({
-            isGenerating: false,
-            showAIPanel: false,
-            generatedContent: "",
-            selectedTone: "professional",
-            hasGenerated: false,
-          });
-          onClose();
-        },
-      });
-      return;
+      const shouldSave = window.confirm(
+        "You have unsaved changes. Would you like to save this as a draft before closing?"
+      );
+      if (shouldSave) {
+        handleSaveDraft();
+        return;
+      }
     }
 
     // Reset form
-    form.resetFields();
+    setTo([]);
+    setCc([]);
+    setBcc([]);
+    setSubject("");
+    setBody("");
     setAttachments([]);
+    setToInput("");
+    setCcInput("");
+    setBccInput("");
     setShowCc(false);
     setShowBcc(false);
+    setErrors({});
     setAiState({
       isGenerating: false,
       showAIPanel: false,
@@ -446,363 +647,409 @@ Best regards`,
     onClose();
   };
 
-  const currentSubject = Form.useWatch('subject', form);
+  if (!isOpen) return null;
 
   const ComposeContent = () => (
-    <Form
-      form={form}
-      layout="vertical"
-      initialValues={initialData}
-      style={{ height: '100%', display: 'flex', flexDirection: 'column' }}
-    >
-      <div style={{ flex: 1, overflow: 'auto', padding: 24 }}>
-        {/* To Field */}
-        <Form.Item
-          name="to"
-          label="To:"
-          rules={[
-            { required: true, message: 'At least one recipient is required' },
-            {
-              validator: (_, value) => {
-                if (!value || value.length === 0) return Promise.resolve();
-                const invalidEmails = value.filter((email: string) => !validateEmail(email));
-                if (invalidEmails.length > 0) {
-                  return Promise.reject(`Invalid email addresses: ${invalidEmails.join(', ')}`);
-                }
-                return Promise.resolve();
-              },
-            },
-          ]}
+    <>
+      {/* Header */}
+      <div className="flex items-center justify-between p-4 border-b border-gray-200">
+        <h2 className="text-lg font-semibold text-gray-900">
+          {isPanel ? "Compose" : "New Message"}
+        </h2>
+        <button
+          onClick={handleClose}
+          className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
         >
-          <Select
-            mode="tags"
-            placeholder="Enter email addresses..."
-            style={{ width: '100%' }}
-            tokenSeparators={[',', ';']}
-            suffixIcon={
-              <Space>
-                <Button
-                  type="text"
-                  size="small"
-                  onClick={() => setShowCc(!showCc)}
-                  style={{ color: showCc ? '#1890ff' : undefined }}
-                >
-                  Cc
-                </Button>
-                <Button
-                  type="text"
-                  size="small"
-                  onClick={() => setShowBcc(!showBcc)}
-                  style={{ color: showBcc ? '#1890ff' : undefined }}
-                >
-                  Bcc
-                </Button>
-              </Space>
-            }
-          />
-        </Form.Item>
+          <X className="w-5 h-5 text-gray-500" />
+        </button>
+      </div>
 
-        {/* CC Field */}
-        {showCc && (
-          <Form.Item
-            name="cc"
-            label="Cc:"
-            rules={[
-              {
-                validator: (_, value) => {
-                  if (!value || value.length === 0) return Promise.resolve();
-                  const invalidEmails = value.filter((email: string) => !validateEmail(email));
-                  if (invalidEmails.length > 0) {
-                    return Promise.reject(`Invalid CC email addresses: ${invalidEmails.join(', ')}`);
-                  }
-                  return Promise.resolve();
-                },
-              },
-            ]}
-          >
-            <Select
-              mode="tags"
-              placeholder="Enter CC email addresses..."
-              style={{ width: '100%' }}
-              tokenSeparators={[',', ';']}
-            />
-          </Form.Item>
-        )}
-
-        {/* BCC Field */}
-        {showBcc && (
-          <Form.Item
-            name="bcc"
-            label="Bcc:"
-            rules={[
-              {
-                validator: (_, value) => {
-                  if (!value || value.length === 0) return Promise.resolve();
-                  const invalidEmails = value.filter((email: string) => !validateEmail(email));
-                  if (invalidEmails.length > 0) {
-                    return Promise.reject(`Invalid BCC email addresses: ${invalidEmails.join(', ')}`);
-                  }
-                  return Promise.resolve();
-                },
-              },
-            ]}
-          >
-            <Select
-              mode="tags"
-              placeholder="Enter BCC email addresses..."
-              style={{ width: '100%' }}
-              tokenSeparators={[',', ';']}
-            />
-          </Form.Item>
-        )}
-
-        {/* Subject Field with AI Button */}
-        <Form.Item
-          name="subject"
-          label="Subject:"
-          rules={[{ required: true, message: 'Subject is required' }]}
-        >
-          <Input.Group compact>
-            <Input
-              placeholder="Enter subject..."
-              style={{ width: 'calc(100% - 120px)' }}
-            />
-            {currentSubject?.trim() && (
-              <Button
-                type="primary"
-                loading={aiState.isGenerating}
-                onClick={() => generateAIContent(aiState.selectedTone)}
-                style={{ width: 120 }}
-                icon={<ThunderboltOutlined />}
-              >
-                {aiState.isGenerating ? "Generating..." : "AI Generate"}
-              </Button>
-            )}
-          </Input.Group>
-        </Form.Item>
-
-        {/* AI Panel */}
-        {aiState.showAIPanel && (
-          <Card
-            title={
-              <Space>
-                <ThunderboltOutlined style={{ color: '#722ed1' }} />
-                <span>AI Generated Content</span>
-              </Space>
-            }
-            extra={
-              <Space>
-                <Select
-                  value={aiState.selectedTone}
-                  onChange={handleToneChange}
-                  size="small"
-                  style={{ width: 120 }}
-                  options={[
-                    { value: 'professional', label: 'Professional' },
-                    { value: 'friendly', label: 'Friendly' },
-                    { value: 'concise', label: 'Concise' },
-                    { value: 'persuasive', label: 'Persuasive' },
-                  ]}
-                />
-                <Button
-                  type="text"
-                  icon={<ReloadOutlined />}
-                  onClick={handleRegenerateAI}
-                  loading={aiState.isGenerating}
-                  size="small"
-                />
-              </Space>
-            }
-            style={{ marginBottom: 16 }}
-            size="small"
-          >
-            <div style={{
-              background: '#fafafa',
-              border: '1px solid #d9d9d9',
-              borderRadius: 6,
-              padding: 12,
-              marginBottom: 12,
-              maxHeight: 200,
-              overflow: 'auto',
-              whiteSpace: 'pre-wrap',
-              fontFamily: 'monospace',
-              fontSize: 13,
-            }}>
-              {aiState.generatedContent}
-            </div>
-            <Space>
-              <Button
-                type="primary"
-                icon={<CheckOutlined />}
-                onClick={handleUseAIContent}
-                size="small"
-              >
-                Use This Content
-              </Button>
-              <Button
-                onClick={() => setAiState(prev => ({ ...prev, showAIPanel: false }))}
-                size="small"
-              >
-                Dismiss
-              </Button>
-            </Space>
-          </Card>
-        )}
-
-        {/* Attachments */}
-        {attachments.length > 0 && (
-          <Card title="Attachments" size="small" style={{ marginBottom: 16 }}>
-            <Space direction="vertical" style={{ width: '100%' }}>
-              {attachments.map((attachment) => (
-                <div
-                  key={attachment.id}
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    padding: 8,
-                    background: '#fafafa',
-                    borderRadius: 4,
-                  }}
-                >
-                  <Space>
-                    <PaperClipOutlined />
-                    <span>{attachment.file.name}</span>
-                    <Text type="secondary" style={{ fontSize: 11 }}>
-                      ({formatFileSize(attachment.file.size)})
-                    </Text>
-                  </Space>
-                  <Button
+      {/* Form */}
+      <div className="flex-1 overflow-y-auto">
+        <div className="p-4 space-y-4">
+          {/* To Field */}
+          <div>
+            <div className="flex items-center space-x-2 mb-2">
+              <label className="text-sm font-medium text-gray-700 w-12">
+                To:
+              </label>
+              <div className="flex-1">
+                <div className="flex flex-wrap items-center gap-2 p-2 border border-gray-300 rounded-lg focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500">
+                  {to.map((email, index) => (
+                    <span
+                      key={index}
+                      className="inline-flex items-center px-2 py-1 bg-blue-100 text-blue-800 text-sm rounded-md"
+                    >
+                      {email}
+                      <button
+                        onClick={() => removeEmail(email, to, setTo)}
+                        className="ml-1 text-blue-600 hover:text-blue-800"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </span>
+                  ))}
+                  <input
                     type="text"
-                    icon={<DeleteOutlined />}
-                    onClick={() => removeAttachment(attachment.id)}
-                    danger
-                    size="small"
+                    value={toInput}
+                    onChange={(e) =>
+                      handleEmailInput(e.target.value, to, setTo, setToInput)
+                    }
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        if (toInput.trim() && validateEmail(toInput.trim())) {
+                          setTo([...to, toInput.trim()]);
+                          setToInput("");
+                        }
+                      }
+                    }}
+                    placeholder={
+                      to.length === 0 ? "Enter email addresses..." : ""
+                    }
+                    className="flex-1 min-w-0 border-none outline-none bg-transparent"
                   />
                 </div>
-              ))}
-            </Space>
-          </Card>
-        )}
+                {errors.to && (
+                  <p className="text-red-500 text-sm mt-1">{errors.to}</p>
+                )}
+              </div>
+              <div className="flex space-x-1">
+                <button
+                  onClick={() => setShowCc(!showCc)}
+                  className={`text-sm px-2 py-1 rounded transition-colors ${
+                    showCc
+                      ? "bg-blue-100 text-blue-700"
+                      : "text-gray-500 hover:text-gray-700"
+                  }`}
+                >
+                  Cc
+                </button>
+                <button
+                  onClick={() => setShowBcc(!showBcc)}
+                  className={`text-sm px-2 py-1 rounded transition-colors ${
+                    showBcc
+                      ? "bg-blue-100 text-blue-700"
+                      : "text-gray-500 hover:text-gray-700"
+                  }`}
+                >
+                  Bcc
+                </button>
+              </div>
+            </div>
+          </div>
 
-        {/* Body Field */}
-        <Form.Item
-          name="body"
-          label={
-            <Space>
-              <span>Message:</span>
-              {form.getFieldValue('body') === aiState.generatedContent && aiState.generatedContent && (
-                <Tag color="purple" icon={<ThunderboltOutlined />}>
-                  Using AI-generated content
-                </Tag>
+          {/* CC Field */}
+          {showCc && (
+            <div className="flex items-center space-x-2">
+              <label className="text-sm font-medium text-gray-700 w-12">
+                Cc:
+              </label>
+              <div className="flex-1">
+                <div className="flex flex-wrap items-center gap-2 p-2 border border-gray-300 rounded-lg focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500">
+                  {cc.map((email, index) => (
+                    <span
+                      key={index}
+                      className="inline-flex items-center px-2 py-1 bg-gray-100 text-gray-800 text-sm rounded-md"
+                    >
+                      {email}
+                      <button
+                        onClick={() => removeEmail(email, cc, setCc)}
+                        className="ml-1 text-gray-600 hover:text-gray-800"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </span>
+                  ))}
+                  <input
+                    type="text"
+                    value={ccInput}
+                    onChange={(e) =>
+                      handleEmailInput(e.target.value, cc, setCc, setCcInput)
+                    }
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        if (ccInput.trim() && validateEmail(ccInput.trim())) {
+                          setCc([...cc, ccInput.trim()]);
+                          setCcInput("");
+                        }
+                      }
+                    }}
+                    placeholder="Enter CC email addresses..."
+                    className="flex-1 min-w-0 border-none outline-none bg-transparent"
+                  />
+                </div>
+                {errors.cc && (
+                  <p className="text-red-500 text-sm mt-1">{errors.cc}</p>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* BCC Field */}
+          {showBcc && (
+            <div className="flex items-center space-x-2">
+              <label className="text-sm font-medium text-gray-700 w-12">
+                Bcc:
+              </label>
+              <div className="flex-1">
+                <div className="flex flex-wrap items-center gap-2 p-2 border border-gray-300 rounded-lg focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500">
+                  {bcc.map((email, index) => (
+                    <span
+                      key={index}
+                      className="inline-flex items-center px-2 py-1 bg-gray-100 text-gray-800 text-sm rounded-md"
+                    >
+                      {email}
+                      <button
+                        onClick={() => removeEmail(email, bcc, setBcc)}
+                        className="ml-1 text-gray-600 hover:text-gray-800"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </span>
+                  ))}
+                  <input
+                    type="text"
+                    value={bccInput}
+                    onChange={(e) =>
+                      handleEmailInput(e.target.value, bcc, setBcc, setBccInput)
+                    }
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        if (bccInput.trim() && validateEmail(bccInput.trim())) {
+                          setBcc([...bcc, bccInput.trim()]);
+                          setBccInput("");
+                        }
+                      }
+                    }}
+                    placeholder="Enter BCC email addresses..."
+                    className="flex-1 min-w-0 border-none outline-none bg-transparent"
+                  />
+                </div>
+                {errors.bcc && (
+                  <p className="text-red-500 text-sm mt-1">{errors.bcc}</p>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Subject Field with AI Button */}
+          <div className="flex items-center space-x-2">
+            <label className="text-sm font-medium text-gray-700 w-12">
+              Subject:
+            </label>
+            <div className="flex-1 flex space-x-2">
+              <input
+                type="text"
+                value={subject}
+                onChange={(e) => setSubject(e.target.value)}
+                placeholder="Enter subject..."
+                className="flex-1 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              />
+              {subject.trim() && (
+                <button
+                  onClick={() => generateAIContent(aiState.selectedTone)}
+                  disabled={aiState.isGenerating}
+                  className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 disabled:from-gray-400 disabled:to-gray-400 text-white rounded-lg transition-colors text-sm"
+                >
+                  <Sparkles className="w-4 h-4" />
+                  <span>
+                    {aiState.isGenerating
+                      ? "Generating..."
+                      : "Generate with AI"}
+                  </span>
+                </button>
               )}
-            </Space>
-          }
-          rules={[{ required: true, message: 'Message content is required' }]}
-        >
-          <TextArea
-            placeholder="Compose your message..."
-            rows={isPanel ? 8 : 12}
-            style={{ resize: 'none' }}
-          />
-        </Form.Item>
+            </div>
+          </div>
+
+          {/* AI Panel */}
+          {aiState.showAIPanel && (
+            <div className="bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-200 rounded-lg p-4">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center space-x-2">
+                  <Sparkles className="w-4 h-4 text-purple-600" />
+                  <span className="font-semibold text-gray-900">
+                    AI Generated Content
+                  </span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <select
+                    value={aiState.selectedTone}
+                    onChange={(e) =>
+                      handleToneChange(e.target.value as ToneType)
+                    }
+                    className="text-sm border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  >
+                    <option value="professional">Professional</option>
+                    <option value="friendly">Friendly</option>
+                    <option value="concise">Concise</option>
+                    <option value="persuasive">Persuasive</option>
+                  </select>
+                  <button
+                    onClick={handleRegenerateAI}
+                    disabled={aiState.isGenerating}
+                    className="text-purple-600 hover:text-purple-700 p-1 disabled:text-gray-400"
+                    title="Regenerate with selected tone"
+                  >
+                    <RotateCcw className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+              <div className="bg-white border border-gray-200 rounded p-3 mb-3 max-h-48 overflow-y-auto">
+                <pre className="whitespace-pre-wrap text-gray-800 text-sm font-sans">
+                  {aiState.generatedContent}
+                </pre>
+              </div>
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={handleUseAIContent}
+                  className="flex items-center space-x-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors text-sm"
+                >
+                  <Wand2 className="w-4 h-4" />
+                  <span>Use This Content</span>
+                </button>
+                <button
+                  onClick={() =>
+                    setAiState((prev) => ({ ...prev, showAIPanel: false }))
+                  }
+                  className="px-4 py-2 border border-gray-300 hover:bg-gray-50 rounded-lg transition-colors text-sm"
+                >
+                  Dismiss
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Attachments */}
+          {attachments.length > 0 && (
+            <div className="border border-gray-200 rounded-lg p-3">
+              <h4 className="text-sm font-medium text-gray-700 mb-2">
+                Attachments
+              </h4>
+              <div className="space-y-2">
+                {attachments.map((attachment) => (
+                  <div
+                    key={attachment.id}
+                    className="flex items-center justify-between p-2 bg-gray-50 rounded-md"
+                  >
+                    <div className="flex items-center space-x-2">
+                      <Paperclip className="w-4 h-4 text-gray-500" />
+                      <span className="text-sm text-gray-700">
+                        {attachment.file.name}
+                      </span>
+                      <span className="text-xs text-gray-500">
+                        ({formatFileSize(attachment.file.size)})
+                      </span>
+                    </div>
+                    <button
+                      onClick={() => removeAttachment(attachment.id)}
+                      className="text-red-500 hover:text-red-700"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Body Field */}
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <label className="text-sm font-medium text-gray-700">
+                Message:
+              </label>
+              {body === aiState.generatedContent &&
+                aiState.generatedContent && (
+                  <div className="text-sm text-purple-600 flex items-center space-x-1">
+                    <Sparkles className="w-3 h-3" />
+                    <span>Using AI-generated content</span>
+                  </div>
+                )}
+            </div>
+            <textarea
+              value={body}
+              onChange={(e) => setBody(e.target.value)}
+              placeholder="Compose your message..."
+              rows={isPanel ? 8 : 12}
+              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
+            />
+          </div>
+        </div>
       </div>
 
       {/* Footer */}
-      <div style={{
-        padding: '16px 24px',
-        borderTop: '1px solid #f0f0f0',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-      }}>
-        <Space>
-          <Upload
-            beforeUpload={() => false}
-            onChange={handleFileUpload}
+      <div className="flex items-center justify-between p-4 border-t border-gray-200">
+        <div className="flex items-center space-x-2">
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            className="flex items-center space-x-2 px-3 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+          >
+            <Paperclip className="w-4 h-4" />
+            <span className="text-sm">Attach</span>
+          </button>
+          <input
+            ref={fileInputRef}
+            type="file"
             multiple
-            showUploadList={false}
+            onChange={handleFileUpload}
+            className="hidden"
             accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png,.gif"
-          >
-            <Button icon={<PaperClipOutlined />}>
-              Attach
-            </Button>
-          </Upload>
-        </Space>
+          />
+        </div>
 
-        <Space>
-          <Button onClick={handleClose}>
+        <div className="flex items-center space-x-3">
+          <button
+            onClick={handleClose}
+            className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
+          >
             Discard
-          </Button>
-          <Button
-            icon={<SaveOutlined />}
+          </button>
+          <button
             onClick={() => handleSaveDraft()}
-            loading={isSavingDraft}
+            disabled={isSavingDraft}
+            className="flex items-center space-x-2 px-4 py-2 border border-gray-300 hover:bg-gray-50 rounded-lg transition-colors disabled:opacity-50"
           >
-            {isSavingDraft ? "Saving..." : "Save Draft"}
-          </Button>
-          <Button
-            type="primary"
-            icon={<SendOutlined />}
+            <Save className="w-4 h-4" />
+            <span>{isSavingDraft ? "Saving..." : "Save Draft"}</span>
+          </button>
+          <button
             onClick={handleSend}
-            loading={isSending}
+            disabled={isSending || to.length === 0}
+            className="flex items-center space-x-2 px-6 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white rounded-lg transition-colors"
           >
-            {isSending ? "Sending..." : "Send"}
-          </Button>
-        </Space>
+            <Send className="w-4 h-4" />
+            <span>{isSending ? "Sending..." : "Send"}</span>
+          </button>
+        </div>
       </div>
-    </Form>
+    </>
   );
 
   if (isPanel) {
     return (
       <div
-        style={{
-          position: 'fixed',
-          right: 8,
-          top: 64,
-          bottom: 8,
-          width: 500,
-          background: '#fff',
-          borderRadius: 8,
-          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-          zIndex: 1000,
-          display: 'flex',
-          flexDirection: 'column',
-        }}
+        ref={modalRef}
+        className="fixed right-2 w-[500px] h-full bg-white border-l border-gray-200 shadow-xl flex flex-col transform transition-transform duration-300 ease-in-out"
+        style={{ transform: "translateX(0)", zIndex: 60, height: '81%' }}
       >
-        <div style={{
-          padding: '16px 24px',
-          borderBottom: '1px solid #f0f0f0',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}>
-          <Text strong>Compose</Text>
-          <Button
-            type="text"
-            icon={<CloseOutlined />}
-            onClick={handleClose}
-          />
-        </div>
         <ComposeContent />
       </div>
     );
   }
 
   return (
-    <Modal
-      title="New Message"
-      open={isOpen}
-      onCancel={handleClose}
-      width={800}
-      style={{ top: 20 }}
-      footer={null}
-      destroyOnClose
-      className="compose-modal"
-    >
-      <ComposeContent />
-    </Modal>
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+      <div
+        ref={modalRef}
+        className="bg-white rounded-lg shadow-xl w-full max-w-5xl max-h-[90vh] flex flex-col"
+      >
+        <ComposeContent />
+      </div>
+    </div>
   );
 };
 
