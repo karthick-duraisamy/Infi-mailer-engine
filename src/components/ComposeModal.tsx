@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import {
   X,
   Send,
@@ -101,6 +101,9 @@ const ComposeModal: React.FC<ComposeModalProps> = ({
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
+  const toInputRef = useRef<HTMLInputElement>(null);
+  const ccInputRef = useRef<HTMLInputElement>(null);
+  const bccInputRef = useRef<HTMLInputElement>(null);
 
   // Auto-save draft functionality
   useEffect(() => {
@@ -164,33 +167,36 @@ const ComposeModal: React.FC<ComposeModalProps> = ({
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleEmailInput = (
+  const handleEmailInput = useCallback((
     value: string,
     currentEmails: string[],
     setEmails: (emails: string[]) => void,
     setInput: (value: string) => void
   ) => {
-    // Always update the input value first to maintain focus
+    // Always update the input value immediately to maintain focus
     setInput(value);
     
     // Only process email separation when user explicitly adds separators at the end
-    if (value.endsWith(",") || value.endsWith(";")) {
+    if (value.endsWith(",") || value.endsWith(";") || value.endsWith(" ")) {
       const emailToAdd = value.slice(0, -1).trim();
       if (emailToAdd && validateEmail(emailToAdd)) {
-        const uniqueEmails = [...new Set([...currentEmails, emailToAdd])];
-        setEmails(uniqueEmails);
+        // Use functional update to avoid stale closures
+        setEmails(prevEmails => {
+          const uniqueEmails = [...new Set([...prevEmails, emailToAdd])];
+          return uniqueEmails;
+        });
         setInput("");
       }
     }
-  };
+  }, []);
 
-  const removeEmail = (
+  const removeEmail = useCallback((
     emailToRemove: string,
     emails: string[],
     setEmails: (emails: string[]) => void
   ) => {
-    setEmails(emails.filter((email) => email !== emailToRemove));
-  };
+    setEmails(prevEmails => prevEmails.filter((email) => email !== emailToRemove));
+  }, []);
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
@@ -689,6 +695,7 @@ Best regards`,
                     </span>
                   ))}
                   <input
+                    ref={toInputRef}
                     type="text"
                     value={toInput}
                     onChange={(e) =>
@@ -698,7 +705,7 @@ Best regards`,
                       if (e.key === "Enter" || e.key === "Tab") {
                         e.preventDefault();
                         if (toInput.trim() && validateEmail(toInput.trim())) {
-                          setTo([...to, toInput.trim()]);
+                          setTo(prev => [...prev, toInput.trim()]);
                           setToInput("");
                         }
                       } else if (e.key === "Backspace" && toInput === "" && to.length > 0) {
@@ -767,6 +774,7 @@ Best regards`,
                     </span>
                   ))}
                   <input
+                    ref={ccInputRef}
                     type="text"
                     value={ccInput}
                     onChange={(e) =>
@@ -776,7 +784,7 @@ Best regards`,
                       if (e.key === "Enter" || e.key === "Tab") {
                         e.preventDefault();
                         if (ccInput.trim() && validateEmail(ccInput.trim())) {
-                          setCc([...cc, ccInput.trim()]);
+                          setCc(prev => [...prev, ccInput.trim()]);
                           setCcInput("");
                         }
                       } else if (e.key === "Backspace" && ccInput === "" && cc.length > 0) {
@@ -821,6 +829,7 @@ Best regards`,
                     </span>
                   ))}
                   <input
+                    ref={bccInputRef}
                     type="text"
                     value={bccInput}
                     onChange={(e) =>
@@ -830,7 +839,7 @@ Best regards`,
                       if (e.key === "Enter" || e.key === "Tab") {
                         e.preventDefault();
                         if (bccInput.trim() && validateEmail(bccInput.trim())) {
-                          setBcc([...bcc, bccInput.trim()]);
+                          setBcc(prev => [...prev, bccInput.trim()]);
                           setBccInput("");
                         }
                       } else if (e.key === "Backspace" && bccInput === "" && bcc.length > 0) {
