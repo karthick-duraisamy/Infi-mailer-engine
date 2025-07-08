@@ -2,38 +2,6 @@ import { CustomLabel } from '../types/email';
 
 export const mockCustomLabels: CustomLabel[] = [
   {
-    id: 'work',
-    name: 'Work',
-    color: '#3B82F6', // blue-500
-    description: 'Work-related emails',
-    createdAt: '2024-01-01T00:00:00Z',
-    isSystem: true,
-  },
-  {
-    id: 'personal',
-    name: 'Personal',
-    color: '#10B981', // green-500
-    description: 'Personal emails',
-    createdAt: '2024-01-01T00:00:00Z',
-    isSystem: true,
-  },
-  {
-    id: 'important',
-    name: 'Important',
-    color: '#EF4444', // red-500
-    description: 'Important emails that need attention',
-    createdAt: '2024-01-01T00:00:00Z',
-    isSystem: true,
-  },
-  {
-    id: 'travel',
-    name: 'Travel',
-    color: '#8B5CF6', // purple-500
-    description: 'Travel-related emails',
-    createdAt: '2024-01-01T00:00:00Z',
-    isSystem: true,
-  },
-  {
     id: 'urgent',
     name: 'Urgent',
     color: '#F59E0B', // amber-500
@@ -56,30 +24,6 @@ export const mockCustomLabels: CustomLabel[] = [
     description: 'Newsletter subscriptions',
     createdAt: '2024-01-14T00:00:00Z',
     isSystem: false,
-  },
-  {
-    id: '$Forwarded',
-    name: 'Forwarded',
-    color: '#06B6D4', // cyan-500
-    description: 'Forwarded emails',
-    createdAt: '2024-01-15T00:00:00Z',
-    isSystem: true,
-  },
-  {
-    id: 'NonJunk',
-    name: 'Non-Junk',
-    color: '#10B981', // green-500 (same as personal for safety tag)
-    description: 'Recognized as not junk',
-    createdAt: '2024-01-16T00:00:00Z',
-    isSystem: true,
-  },
-  {
-    id: '\\Seen',
-    name: 'Seen',
-    color: '#3B82F6', // blue-500
-    description: 'Email has been read',
-    createdAt: '2024-01-17T00:00:00Z',
-    isSystem: true,
   },
   {
     id: 'purchase-intent',

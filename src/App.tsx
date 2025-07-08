@@ -170,38 +170,7 @@ function App() {
         // System labels
 
         switch (label.labels[0]) {
-          case "work":
-            labelEmails = emails.filter(
-              (email) =>
-                email.customLabels?.includes("work") ||
-                email.from_address.includes("company.com") ||
-                email.from_address.includes("techcorp.com") ||
-                email.from_address.includes("consulting.com") ||
-                email.from_address.includes("design.studio")
-            );
-            break;
-          case "personal":
-            labelEmails = emails.filter(
-              (email) =>
-                email.customLabels?.includes("personal") ||
-                email.subject.toLowerCase().includes("welcome") ||
-                email.from_address.includes("startup.io")
-            );
-            break;
-          case "important":
-            labelEmails = emails.filter(
-              (email) =>
-                email.customLabels?.includes("important") ||
-                email.subject.toLowerCase().includes("urgent") ||
-                email.subject.toLowerCase().includes("important") ||
-                email.is_starred
-            );
-            break;
-          case "travel":
-            labelEmails = emails.filter((email) =>
-              email.customLabels?.includes("travel")
-            );
-            break;
+          
         }
         counts[`label-${label.id}`] = labelEmails.filter(
           (email) => !email.is_read
@@ -402,39 +371,7 @@ function App() {
             conversationEmails: [email],
           })) || [];
         break;
-      case "label-work":
-        filtered = conversations.filter(
-          (email) =>
-            email.customLabels?.includes("work") ||
-            email.subject.toLowerCase().includes("project") ||
-            email.subject.toLowerCase().includes("meeting") ||
-            email.subject.toLowerCase().includes("campaign") ||
-            email.from_address.includes("company.com") ||
-            email.from_address.includes("techcorp.com")
-        );
-        break;
-      case "label-personal":
-        filtered = conversations.filter(
-          (email) =>
-            email.customLabels?.includes("personal") ||
-            email.subject.toLowerCase().includes("welcome") ||
-            email.from_address.includes("startup.io")
-        );
-        break;
-      case "label-important":
-        filtered = conversations.filter(
-          (email) =>
-            email.customLabels?.includes("important") ||
-            email.subject.toLowerCase().includes("urgent") ||
-            email.subject.toLowerCase().includes("important") ||
-            email.is_starred
-        );
-        break;
-      case "label-travel":
-        filtered = conversations?.filter((email) =>
-          email.customLabels?.includes("travel")
-        );
-        break;
+      
       default:
         // Handle custom labels
         if (activeItem.startsWith("custom-label-")) {
