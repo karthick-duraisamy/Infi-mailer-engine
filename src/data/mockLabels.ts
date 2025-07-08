@@ -81,6 +81,60 @@ export const mockCustomLabels: CustomLabel[] = [
     createdAt: '2024-01-17T00:00:00Z',
     isSystem: true,
   },
+  {
+    id: 'purchase-intent',
+    name: 'Purchase Intent',
+    color: '#10B981', // green-500
+    description: 'Emails showing purchase interest',
+    createdAt: '2024-01-18T00:00:00Z',
+    isSystem: false,
+    category: 'intent',
+  },
+  {
+    id: 'demo-request',
+    name: 'Demo Request',
+    color: '#F59E0B', // amber-500
+    description: 'Requests for product demos',
+    createdAt: '2024-01-19T00:00:00Z',
+    isSystem: false,
+    category: 'intent',
+  },
+  {
+    id: 'support-inquiry',
+    name: 'Support Inquiry',
+    color: '#EF4444', // red-500
+    description: 'Customer support questions',
+    createdAt: '2024-01-20T00:00:00Z',
+    isSystem: false,
+    category: 'intent',
+  },
+  {
+    id: 'enterprise',
+    name: 'Enterprise',
+    color: '#8B5CF6', // purple-500
+    description: 'Enterprise client communications',
+    createdAt: '2024-01-21T00:00:00Z',
+    isSystem: false,
+    category: 'corporate',
+  },
+  {
+    id: 'partnerships',
+    name: 'Partnerships',
+    color: '#06B6D4', // cyan-500
+    description: 'Business partnership discussions',
+    createdAt: '2024-01-22T00:00:00Z',
+    isSystem: false,
+    category: 'corporate',
+  },
+  {
+    id: 'legal',
+    name: 'Legal',
+    color: '#374151', // gray-700
+    description: 'Legal and compliance matters',
+    createdAt: '2024-01-23T00:00:00Z',
+    isSystem: false,
+    category: 'corporate',
+  },
 ];
 
 export const labelColors = [

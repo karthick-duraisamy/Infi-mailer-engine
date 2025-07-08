@@ -39,5 +39,6 @@ export interface CustomLabel {
   color: string;
   description?: string;
   createdAt: string;
-  isSystem?: boolean; // For built-in labels like Work, Personal, etc.
+  isSystem: boolean;
+  category?: 'intent' | 'corporate';
 }
