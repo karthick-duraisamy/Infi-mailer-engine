@@ -902,80 +902,80 @@ function App() {
 
           {/* Content Area */}
           <div className="flex-1 flex overflow-hidden">
-        {getMailListResponse?.isSuccess && (
-          <div className="flex-1 flex min-w-0">
-            {isFullPageView ? (
-              <ConversationThread
-                email={selectedEmail}
-                onClose={() => setSelectedEmail(null)}
-                onBack={handleBackToList}
-                isFullPage={true}
-                aiReplyState={getAiReplyState(selectedEmail?.message_id || "")}
-                onGenerateAiReply={generateAiReply}
-                onAiReplyStateChange={(newState) =>
-                  selectedEmail?.message_id &&
-                  updateAiReplyState(selectedEmail.message_id, newState)
-                }
-                customLabels={customLabels}
-                onEmailLabelsChange={handleEmailLabelsChange}
-                onCreateLabel={handleCreateLabel}
-                onDeleteEmail={handleDeleteEmail}
-                onRestoreEmail={handleRestoreEmail}
-                activeSection={activeItem}
-              />
-            ) : (
-              <div className="flex flex-1 h-full">
-                {getMailListResponse?.isLoading ||
-                getMailListResponse?.isFetching ? (
-                  <NavbarSkeleton />
+            {getMailListResponse?.isSuccess && (
+              <div className="flex-1 flex min-w-0">
+                {isFullPageView ? (
+                  <ConversationThread
+                    email={selectedEmail}
+                    onClose={() => setSelectedEmail(null)}
+                    onBack={handleBackToList}
+                    isFullPage={true}
+                    aiReplyState={getAiReplyState(selectedEmail?.message_id || "")}
+                    onGenerateAiReply={generateAiReply}
+                    onAiReplyStateChange={(newState) =>
+                      selectedEmail?.message_id &&
+                      updateAiReplyState(selectedEmail.message_id, newState)
+                    }
+                    customLabels={customLabels}
+                    onEmailLabelsChange={handleEmailLabelsChange}
+                    onCreateLabel={handleCreateLabel}
+                    onDeleteEmail={handleDeleteEmail}
+                    onRestoreEmail={handleRestoreEmail}
+                    activeSection={activeItem}
+                  />
                 ) : (
-                  <div className="flex-shrink-0">
-                    <EmailList
-                      emails={filteredEmails}
-                      selectedEmailId={selectedEmail?.message_id || null}
-                      onEmailSelect={handleEmailSelect}
-                      onStarToggle={handleStarToggle}
-                      onCheckToggle={handleCheckToggle}
-                      checkedEmails={checkedEmails}
-                      activeSection={activeItem}
+                  <div className="flex flex-1 h-full">
+                    {getMailListResponse?.isLoading ||
+                    getMailListResponse?.isFetching ? (
+                      <NavbarSkeleton />
+                    ) : (
+                      <div className="flex-shrink-0">
+                        <EmailList
+                          emails={filteredEmails}
+                          selectedEmailId={selectedEmail?.message_id || null}
+                          onEmailSelect={handleEmailSelect}
+                          onStarToggle={handleStarToggle}
+                          onCheckToggle={handleCheckToggle}
+                          checkedEmails={checkedEmails}
+                          activeSection={activeItem}
+                          customLabels={customLabels}
+                          onEmailLabelsChange={handleEmailLabelsChange}
+                          onCreateLabel={handleCreateLabel}
+                          onBulkMarkAsRead={handleBulkMarkAsRead}
+                          onBulkDelete={handleBulkDelete}
+                          onBulkRestore={handleBulkRestore}
+                          onSelectAll={handleSelectAll}
+                          onUnselectAll={handleUnselectAll}
+                          setEmails={setEmails}
+                          readStatus={filters?.readStatus}
+                          searchFilter={searchFilter}
+                        />
+                      </div>
+                    )}
+
+                    <ConversationThread
+                      email={selectedEmail}
+                      onClose={() => setSelectedEmail(null)}
+                      isFullPage={false}
+                      aiReplyState={getAiReplyState(selectedEmail?.id || "")}
+                      onGenerateAiReply={generateAiReply}
+                      onAiReplyStateChange={(newState) =>
+                        selectedEmail?.message_id &&
+                        updateAiReplyState(selectedEmail.message_id, newState)
+                      }
                       customLabels={customLabels}
                       onEmailLabelsChange={handleEmailLabelsChange}
                       onCreateLabel={handleCreateLabel}
-                      onBulkMarkAsRead={handleBulkMarkAsRead}
-                      onBulkDelete={handleBulkDelete}
-                      onBulkRestore={handleBulkRestore}
-                      onSelectAll={handleSelectAll}
-                      onUnselectAll={handleUnselectAll}
-                      setEmails={setEmails}
-                      readStatus={filters?.readStatus}
-                      searchFilter={searchFilter}
+                      onDeleteEmail={handleDeleteEmail}
+                      onRestoreEmail={handleRestoreEmail}
+                      activeSection={activeItem}
+                      onStarToggle={handleStarToggle}
                     />
                   </div>
                 )}
-
-                <ConversationThread
-                  email={selectedEmail}
-                  onClose={() => setSelectedEmail(null)}
-                  isFullPage={false}
-                  aiReplyState={getAiReplyState(selectedEmail?.id || "")}
-                  onGenerateAiReply={generateAiReply}
-                  onAiReplyStateChange={(newState) =>
-                    selectedEmail?.message_id &&
-                    updateAiReplyState(selectedEmail.message_id, newState)
-                  }
-                  customLabels={customLabels}
-                  onEmailLabelsChange={handleEmailLabelsChange}
-                  onCreateLabel={handleCreateLabel}
-                  onDeleteEmail={handleDeleteEmail}
-                  onRestoreEmail={handleRestoreEmail}
-                  activeSection={activeItem}
-                  onStarToggle={handleStarToggle}
-                />
               </div>
             )}
           </div>
-        )}
-        </div>
       </div>
 
       <LabelManager
