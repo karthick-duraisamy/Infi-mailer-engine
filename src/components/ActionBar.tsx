@@ -1,12 +1,5 @@
-
 import React, { useState, useRef, useEffect } from "react";
-import {
-  Search,
-  Settings,
-  UserCircle,
-  Plus,
-  X,
-} from "lucide-react";
+import { Search, Settings, UserCircle, Plus, X } from "lucide-react";
 import EmailFilters, { FilterOptions } from "./EmailFilters";
 import NotificationPreferences from "./NotificationPreferences";
 import SignatureSetup from "./SignatureSetup";
@@ -93,9 +86,7 @@ const ActionBar: React.FC<ActionBarProps> = ({
           {/* Search Section */}
           <div className="flex-1 max-w-2xl">
             <div className="relative">
-              <div className={`relative transition-all duration-200 ${
-                isSearchExpanded ? 'w-full' : 'w-full'
-              }`}>
+              <div className={`relative transition-all duration-200`}>
                 <button
                   type="button"
                   className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors z-10"
@@ -118,7 +109,7 @@ const ActionBar: React.FC<ActionBarProps> = ({
                       handleSearchChange(searchQuery);
                     }
                   }}
-                  className="w-full pl-10 pr-10 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white focus:border-blue-500 transition-all placeholder-gray-500 text-sm"
+                  className="pl-10 pr-10 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white focus:border-blue-500 transition-all placeholder-gray-500 text-sm"
                 />
 
                 {searchQuery && (
@@ -163,7 +154,9 @@ const ActionBar: React.FC<ActionBarProps> = ({
               {showSettingsDropdown && (
                 <div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
                   <div className="px-4 py-2 border-b border-gray-100">
-                    <h3 className="font-semibold text-gray-900 text-sm">Settings</h3>
+                    <h3 className="font-semibold text-gray-900 text-sm">
+                      Settings
+                    </h3>
                   </div>
 
                   <button
@@ -171,7 +164,9 @@ const ActionBar: React.FC<ActionBarProps> = ({
                     className="w-full text-left px-4 py-3 hover:bg-gray-50 transition-colors flex items-center space-x-3"
                   >
                     <UserCircle className="w-4 h-4 text-gray-500" />
-                    <span className="text-gray-700 text-sm">Signature Setup</span>
+                    <span className="text-gray-700 text-sm">
+                      Signature Setup
+                    </span>
                   </button>
                 </div>
               )}

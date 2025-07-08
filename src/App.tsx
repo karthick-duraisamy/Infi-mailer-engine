@@ -24,7 +24,9 @@ function App() {
   const [customLabels, setCustomLabels] =
     useState<CustomLabel[]>(mockCustomLabels);
   const [showNotification, setShowNotification] = useState(false);
-  const [differentNotificationCount, setDifferentNotificationCount] = useState<number | undefined>(undefined)
+  const [differentNotificationCount, setDifferentNotificationCount] = useState<
+    number | undefined
+  >(undefined);
   const [checkedEmails, setCheckedEmails] = useState<Set<string>>(new Set());
   const [searchQuery, setSearchQuery] = useState("");
   const [filters, setFilters] = useState<FilterOptions>({
@@ -50,11 +52,12 @@ function App() {
     if (!localStorage.getItem("user")) {
       localStorage.setItem(
         "user",
-        '"K6L7I5e3R/pyUXXfAkYb2QV5/WIYawnYYAclNRe35oYNm2KluQtzHo41AXUFB4yHoVJrg/qtj7MJdS/5ZZkfuTBCMXVuZtL8rjrpvePcWUfDJDKgL6PtG4gNp8+qPUwXELEHDiOA/AIn6RaTQNVd5kT2IFS9j0BsgqKMwyd/QFWbrJlwW40wFadaO+xHNur1JdzR66GDRbu+EBmcLijmxQ=="'
+        '"K6L7I5e3R/pyUXXfAkYb2QV5/WIYawnYYAclNRe35oYNm2KluQtzHo41AXUFB4yHoVJrg/qtj7MJdS/5ZZkfuTBCMXVuZtL8rjrpvePcWUfDJDKgL6PtG4gNp8+qPUwXELEHDiOA/AIn6RaTQNVd5kT2IFS9j0BsgqKMwyd/QFWbrJlwW40wFadaO+xHNur1JdzR66GDRbu+EBmcLijmxQ=="',
       );
       localStorage.setItem("project", "4");
     }
-  }, []);const [sidebarWidth, setSidebarWidth] = useState(64);
+  }, []);
+  const [sidebarWidth, setSidebarWidth] = useState(64);
 
   const [aiReplyStates, setAiReplyStates] = useState({
     isGenerating: false,
@@ -64,11 +67,11 @@ function App() {
   });
 
   const [filterData, setFilterData] = useState<any>({
-      page: 1,
-      page_size: 50,
-      search: undefined,
-      folder: 'inbox'
-    });
+    page: 1,
+    page_size: 50,
+    search: undefined,
+    folder: "inbox",
+  });
 
   // useEffect(() => {
   //   getMailList({});
@@ -96,14 +99,14 @@ function App() {
       const staticList = (getMailListResponse as any)?.data?.response?.data
         ?.results;
       const latestCount = Number(
-        (getMailListResponse as any)?.data?.response?.data?.count
+        (getMailListResponse as any)?.data?.response?.data?.count,
       );
 
       if (notificationState !== undefined) {
         if (notificationState !== latestCount) {
           setDifferentNotificationCount(latestCount - notificationState);
           setShowNotification(true);
-          console.log('difference generated')
+          console.log("difference generated");
           if (localStorage.getItem("notify") === "true") {
             // alert(`You have ${differentNotificationCount} new messages`);
           }
@@ -120,7 +123,7 @@ function App() {
           staticList.map((email: any) => ({
             ...email,
             intentLabel: email.labels || "new",
-          }))
+          })),
         );
 
         const deletedIds = staticList
@@ -151,10 +154,12 @@ function App() {
     // Basic sections - show unread count
     counts.inbox =
       emails?.filter(
-        (email) => (!email.is_read || email.is_read) && !email.is_deleted
+        (email) => (!email.is_read || email.is_read) && !email.is_deleted,
       ).length || 0;
     counts.starred = emails?.filter((email) => email.is_starred).length || 0;
-    counts.sent = emails?.filter((email) => email.folder === "[Gmail]/Sent Mail").length || 0;
+    counts.sent =
+      emails?.filter((email) => email.folder === "[Gmail]/Sent Mail").length ||
+      0;
     counts.bin = deletedEmails.filter((email) => email.is_deleted).length || 0;
 
     // Custom labels - show unread count
@@ -171,18 +176,17 @@ function App() {
         // System labels
 
         switch (label.labels[0]) {
-          
         }
         counts[`label-${label.id}`] = labelEmails.filter(
-          (email) => !email.is_read
+          (email) => !email.is_read,
         ).length;
       } else {
         // Custom labels
         const labelEmails = emails.filter((email) =>
-          email.customLabels?.includes(label.id)
+          email.customLabels?.includes(label.id),
         );
         counts[`custom-label-${label.id}`] = labelEmails.filter(
-          (email) => !email.is_read
+          (email) => !email.is_read,
         ).length;
       }
     });
@@ -219,8 +223,8 @@ function App() {
           (message: any) =>
             message.content.toLowerCase().includes("attach") ||
             message.content.toLowerCase().includes("file") ||
-            message.content.toLowerCase().includes("document")
-        )
+            message.content.toLowerCase().includes("document"),
+        ),
       );
     }
 
@@ -343,7 +347,7 @@ function App() {
       }))
       .sort(
         (a, b) =>
-          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
       );
   }, [emails]);
 
@@ -360,7 +364,9 @@ function App() {
         filtered = conversations?.filter((email) => email.is_starred);
         break;
       case "sent":
-        filtered = conversations?.filter((email) => email.folder === "[Gmail]/Sent Mail");
+        filtered = conversations?.filter(
+          (email) => email.folder === "[Gmail]/Sent Mail",
+        );
         break;
       case "bin":
         // Show deleted emails
@@ -371,13 +377,13 @@ function App() {
             conversationEmails: [email],
           })) || [];
         break;
-      
+
       default:
         // Handle custom labels
         if (activeItem.startsWith("custom-label-")) {
           const labelId = activeItem.replace("custom-label-", "");
           filtered = conversations?.filter((email) =>
-            email.customLabels?.includes(labelId)
+            email.customLabels?.includes(labelId),
           );
         }
         break;
@@ -392,14 +398,14 @@ function App() {
           email.from_adress.toLowerCase().includes(query) ||
           email.preview.toLowerCase().includes(query) ||
           email.messages.some((message: any) =>
-            message.content.toLowerCase().includes(query)
+            message.content.toLowerCase().includes(query),
           ) ||
           // Search in custom labels
           (email.customLabels &&
             email.customLabels.some((labelId: any) => {
               const label = customLabels.find((l) => l.id === labelId);
               return label?.name.toLowerCase().includes(query);
-            }))
+            })),
       );
     }
 
@@ -423,8 +429,8 @@ function App() {
     // Mark email as read when selected
     setEmails((prevEmails) =>
       prevEmails?.map((e) =>
-        e.message_id === email.message_id ? { ...e, is_read: true } : e
-      )
+        e.message_id === email.message_id ? { ...e, is_read: true } : e,
+      ),
     );
   };
 
@@ -451,8 +457,8 @@ function App() {
       prevEmails?.map((email) =>
         email.message_id === emailId
           ? { ...email, is_starred: !email.is_starred }
-          : email
-      )
+          : email,
+      ),
     );
 
     // If we're currently in the starred section and the email is being unstarred,
@@ -501,7 +507,7 @@ function App() {
         is_starred: newFilters?.starred,
         is_read: newFilters.readStatus,
         has_attachment: newFilters?.hasAttachment,
-      })
+      }),
     );
   };
 
@@ -543,7 +549,7 @@ function App() {
 
   // Label Management Functions
   const handleCreateLabel = (
-    labelData: Omit<CustomLabel, "id" | "createdAt">
+    labelData: Omit<CustomLabel, "id" | "createdAt">,
   ) => {
     const newLabel: CustomLabel = {
       ...labelData,
@@ -556,12 +562,12 @@ function App() {
 
   const handleUpdateLabel = (
     labelId: string,
-    updates: Partial<CustomLabel>
+    updates: Partial<CustomLabel>,
   ) => {
     setCustomLabels((prev) =>
       prev.map((label) =>
-        label.id === labelId ? { ...label, ...updates } : label
-      )
+        label.id === labelId ? { ...label, ...updates } : label,
+      ),
     );
 
     // In a real app, you would make an API call here
@@ -575,7 +581,7 @@ function App() {
         ...email,
         customLabels:
           email.customLabels?.filter((id: any) => id !== labelId) || [],
-      }))
+      })),
     );
 
     // Remove label from labels list
@@ -595,8 +601,8 @@ function App() {
       prevEmails.map((email) =>
         emailIds.includes(email.message_id)
           ? { ...email, customLabels: labelIds }
-          : email
-      )
+          : email,
+      ),
     );
 
     // Clear checked emails after label operation
@@ -621,8 +627,8 @@ function App() {
       prevEmails?.map((email) =>
         emailIds.includes(email.message_id)
           ? { ...email, is_read: isRead }
-          : email
-      )
+          : email,
+      ),
     );
 
     // Clear checked emails after action
@@ -636,7 +642,7 @@ function App() {
   const handleBulkDelete = (emailIds: string[]) => {
     // Store previous state for undo
     const previousState = emails?.filter((email) =>
-      emailIds.includes(email.message_id)
+      emailIds.includes(email.message_id),
     );
 
     setLastAction({
@@ -657,8 +663,8 @@ function App() {
       prevEmails.map((email) =>
         emailIds.includes(email.message_id)
           ? { ...email, is_deleted: true }
-          : email
-      )
+          : email,
+      ),
     );
 
     // Clear checked emails and selected email if deleted
@@ -692,8 +698,8 @@ function App() {
       prevEmails?.map((email) =>
         email.message_id === emailId
           ? { ...email, is_deleted: !email.is_deleted }
-          : email
-      )
+          : email,
+      ),
     );
 
     // Clear selection if this email was selected
@@ -707,7 +713,7 @@ function App() {
   const handleRestoreEmail = (emailId: string) => {
     // Find the email to restore
     const emailToRestore = deletedEmails.find(
-      (email) => email.message_id === emailId
+      (email) => email.message_id === emailId,
     );
     if (!emailToRestore) return;
 
@@ -716,7 +722,7 @@ function App() {
 
     // Remove from deleted emails
     setDeletedEmails((prev) =>
-      prev.filter((email) => email.message_id !== emailId)
+      prev.filter((email) => email.message_id !== emailId),
     );
 
     // Clear selection if this email was selected
@@ -730,7 +736,7 @@ function App() {
   const handleBulkRestore = (emailIds: string[]) => {
     // Find emails to restore
     const emailsToRestore = deletedEmails.filter((email) =>
-      emailIds.includes(email.message_id)
+      emailIds.includes(email.message_id),
     );
 
     // Move emails back to active emails
@@ -738,7 +744,7 @@ function App() {
 
     // Remove from deleted emails
     setDeletedEmails((prev) =>
-      prev.filter((email) => !emailIds.includes(email.message_id))
+      prev.filter((email) => !emailIds.includes(email.message_id)),
     );
 
     // Clear checked emails and selected email if restored
@@ -757,10 +763,10 @@ function App() {
         setEmails((prevEmails) =>
           prevEmails?.map((email) => {
             const prevState = lastAction.previousState.find(
-              (state: any) => state.id === email.message_id
+              (state: any) => state.id === email.message_id,
             );
             return prevState ? { ...email, is_read: prevState.is_read } : email;
-          })
+          }),
         );
         break;
 
@@ -775,12 +781,12 @@ function App() {
         setEmails((prevEmails) =>
           prevEmails?.map((email) => {
             const prevState = lastAction.previousState.find(
-              (state: any) => state.id === email.message_id
+              (state: any) => state.id === email.message_id,
             );
             return prevState
               ? { ...email, is_starred: prevState.is_starred }
               : email;
-          })
+          }),
         );
         break;
     }
@@ -811,7 +817,7 @@ function App() {
   const generateAiReply = async (
     email: any,
     tone: string = "professional",
-    replyType: string = "reply"
+    replyType: string = "reply",
   ) => {
     const currentState = getAiReplyState(email.message_id);
     updateAiReplyState(email.message_id, {
@@ -869,9 +875,9 @@ function App() {
           🔔 You have {differentNotificationCount} new messages
         </div>
       )} */}
-      <Header
+      {/* <Header
         onMenuToggle={handleMenuToggle}
-      />
+      /> */}
 
       {/* Top Navigation */}
       <Sidebar
