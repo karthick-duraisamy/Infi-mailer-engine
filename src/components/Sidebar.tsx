@@ -233,14 +233,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             </div>
           </div>
 
-          {/* Right side - Compose button */}
-          <button 
-            onClick={onComposeClick}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center space-x-2"
-          >
-            <Plus className="w-4 h-4" />
-            <span className="hidden sm:inline">Compose</span>
-          </button>
+          
         </div>
       </nav>
     </>
