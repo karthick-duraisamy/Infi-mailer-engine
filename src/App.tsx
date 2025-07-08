@@ -869,33 +869,39 @@ function App() {
           🔔 You have {differentNotificationCount} new messages
         </div>
       )} */}
-      <Header
-        onMenuToggle={handleMenuToggle}
-        onSearch={handleSearch}
-        onFiltersChange={handleFiltersChange}
-        filters={filters}
-        checkedEmails={checkedEmails}
-        onBulkMarkAsRead={handleBulkMarkAsRead}
-        onBulkDelete={handleBulkDelete}
-        onSelectAll={handleSelectAll}
-        onUnselectAll={handleUnselectAll}
-        onUndo={handleUndo}
-        hasSelection={checkedEmails.size > 0}
-        onComposeClick={handleComposeOpen}
-      />
+      {/* Main Layout with Sidebar and Header */}
+      <div className="flex flex-1 overflow-hidden">
+        {/* Sidebar */}
+        <Sidebar
+          activeItem={activeItem}
+          onItemSelect={handleSectionChange}
+          isOpen={sidebarOpen}
+          onComposeClick={handleComposeOpen}
+          customLabels={customLabels}
+          onManageLabels={() => setLabelManagerOpen(true)}
+          emailCounts={emailCounts}
+        />
 
-      {/* Top Navigation */}
-      <Sidebar
-        activeItem={activeItem}
-        onItemSelect={handleSectionChange}
-        isOpen={sidebarOpen}
-        onComposeClick={handleComposeOpen}
-        customLabels={customLabels}
-        onManageLabels={() => setLabelManagerOpen(true)}
-        emailCounts={emailCounts}
-      />
+        {/* Main Content Area */}
+        <div className="flex-1 flex flex-col overflow-hidden">
+          {/* Header positioned to the right of sidebar */}
+          <Header
+            onMenuToggle={handleMenuToggle}
+            onSearch={handleSearch}
+            onFiltersChange={handleFiltersChange}
+            filters={filters}
+            checkedEmails={checkedEmails}
+            onBulkMarkAsRead={handleBulkMarkAsRead}
+            onBulkDelete={handleBulkDelete}
+            onSelectAll={handleSelectAll}
+            onUnselectAll={handleUnselectAll}
+            onUndo={handleUndo}
+            hasSelection={checkedEmails.size > 0}
+            onComposeClick={handleComposeOpen}
+          />
 
-      <div className="flex-1 flex overflow-hidden">
+          {/* Content Area */}
+          <div className="flex-1 flex overflow-hidden">
         {getMailListResponse?.isSuccess && (
           <div className="flex-1 flex min-w-0">
             {isFullPageView ? (
@@ -969,6 +975,7 @@ function App() {
             )}
           </div>
         )}
+        </div>
       </div>
 
       <LabelManager

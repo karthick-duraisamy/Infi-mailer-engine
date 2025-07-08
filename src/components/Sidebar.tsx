@@ -84,11 +84,24 @@ const Sidebar: React.FC<SidebarProps> = ({
         />
       )}
 
-      {/* Top Navigation Bar */}
-      <nav className="bg-white border-b border-gray-200 px-4 py-3">
-        <div className="flex items-center justify-between">
-          {/* Left side - Main navigation items */}
-          <div className="flex items-center space-x-1">
+      {/* Vertical Sidebar */}
+      <nav className={`
+        bg-white border-r border-gray-200 h-full overflow-y-auto flex-shrink-0
+        ${isOpen ? 'w-64' : 'w-16'} 
+        transition-all duration-300 ease-in-out
+        lg:w-64 lg:block
+        ${isOpen ? 'block' : 'hidden lg:block'}
+      `}>
+        <div className="p-4">
+          {/* Logo/Brand */}
+          <div className="flex items-center space-x-2 mb-6">
+            <h1 className="text-xl font-semibold text-gray-900 truncate">
+              Mail
+            </h1>
+          </div>
+
+          {/* Main navigation items */}
+          <div className="space-y-2">
             {navigationItems.map((item) => {
               const Icon = item.icon;
               const isActive = activeItem === item.id;
@@ -98,7 +111,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                   key={item.id}
                   onClick={() => onItemSelect(item.id)}
                   className={`
-                    flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors
+                    w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-colors
                     ${
                       isActive
                         ? "bg-blue-100 text-blue-700"
@@ -106,8 +119,12 @@ const Sidebar: React.FC<SidebarProps> = ({
                     }
                   `}
                 >
-                  <Icon className="w-4 h-4" />
-                  <span className="hidden sm:inline">{item.label}</span>
+                  <div className="flex items-center space-x-3">
+                    <Icon className="w-4 h-4" />
+                    <span className={`${isOpen || window.innerWidth >= 1024 ? 'block' : 'hidden'}`}>
+                      {item.label}
+                    </span>
+                  </div>
                   {item.count > 0 && (
                     <span
                       className={`
@@ -126,24 +143,28 @@ const Sidebar: React.FC<SidebarProps> = ({
               );
             })}
 
-            {/* Intent Labels Dropdown */}
-            <div className="relative">
+            {/* Intent Labels Section */}
+            <div className="mt-6">
               <button
                 onClick={() => {
                   setIsIntentOpen(!isIntentOpen);
                   setIsCorporateOpen(false); // close other
                 }}
                 className={`
-      flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors
-      ${
-        isIntentOpen
-          ? "bg-gray-100 text-gray-900"
-          : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
-      }
-    `}
+                  w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-colors
+                  ${
+                    isIntentOpen
+                      ? "bg-gray-100 text-gray-900"
+                      : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                  }
+                `}
               >
-                <Tag className="w-4 h-4" />
-                <span className="hidden sm:inline">Intent labels</span>
+                <div className="flex items-center space-x-3">
+                  <Tag className="w-4 h-4" />
+                  <span className={`${isOpen || window.innerWidth >= 1024 ? 'block' : 'hidden'}`}>
+                    Intent labels
+                  </span>
+                </div>
                 {isIntentOpen ? (
                   <ChevronDown className="w-3 h-3" />
                 ) : (
@@ -152,7 +173,7 @@ const Sidebar: React.FC<SidebarProps> = ({
               </button>
 
               {isIntentOpen && (
-                <div className="absolute top-full left-0 mt-1 w-64 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50 max-h-64 overflow-y-auto">
+                <div className="mt-2 space-y-1 pl-6">
                   {intentLabels.map((label) => (
                     <button
                       key={label.id}
@@ -160,28 +181,30 @@ const Sidebar: React.FC<SidebarProps> = ({
                         handleLabelClick(label.id, false);
                         setIsIntentOpen(false);
                       }}
-                      className={`w-full flex items-center justify-between px-3 py-2 text-sm transition-colors
-            ${
-              activeItem === `custom-label-${label.id}`
-                ? "bg-blue-100 text-blue-700"
-                : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
-            }`}
+                      className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors
+                        ${
+                          activeItem === `custom-label-${label.id}`
+                            ? "bg-blue-100 text-blue-700"
+                            : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                        }`}
                     >
                       <div className="flex items-center space-x-3">
                         <div
                           className="w-3 h-3 rounded-full"
                           style={{ backgroundColor: label.color }}
                         />
-                        <span>{label.name}</span>
+                        <span className={`${isOpen || window.innerWidth >= 1024 ? 'block' : 'hidden'}`}>
+                          {label.name}
+                        </span>
                       </div>
                       {getLabelCount(label.id) > 0 && (
                         <span
                           className={`px-2 py-1 text-xs rounded-full
-              ${
-                activeItem === `custom-label-${label.id}`
-                  ? "bg-blue-200 text-blue-800"
-                  : "bg-gray-200 text-gray-600"
-              }`}
+                            ${
+                              activeItem === `custom-label-${label.id}`
+                                ? "bg-blue-200 text-blue-800"
+                                : "bg-gray-200 text-gray-600"
+                            }`}
                         >
                           {getLabelCount(label.id)}
                         </span>
@@ -192,24 +215,28 @@ const Sidebar: React.FC<SidebarProps> = ({
               )}
             </div>
 
-            {/* Corporate Labels Dropdown */}
-            <div className="relative">
+            {/* Corporate Labels Section */}
+            <div className="mt-4">
               <button
                 onClick={() => {
                   setIsCorporateOpen(!isCorporateOpen);
                   setIsIntentOpen(false); // close other
                 }}
                 className={`
-      flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors
-      ${
-        isCorporateOpen
-          ? "bg-gray-100 text-gray-900"
-          : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
-      }
-    `}
+                  w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-colors
+                  ${
+                    isCorporateOpen
+                      ? "bg-gray-100 text-gray-900"
+                      : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                  }
+                `}
               >
-                <Tag className="w-4 h-4" />
-                <span className="hidden sm:inline">Corporate labels</span>
+                <div className="flex items-center space-x-3">
+                  <Tag className="w-4 h-4" />
+                  <span className={`${isOpen || window.innerWidth >= 1024 ? 'block' : 'hidden'}`}>
+                    Corporate labels
+                  </span>
+                </div>
                 {isCorporateOpen ? (
                   <ChevronDown className="w-3 h-3" />
                 ) : (
@@ -218,7 +245,7 @@ const Sidebar: React.FC<SidebarProps> = ({
               </button>
 
               {isCorporateOpen && (
-                <div className="absolute top-full left-0 mt-1 w-64 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50 max-h-64 overflow-y-auto">
+                <div className="mt-2 space-y-1 pl-6">
                   {corporateLabels.map((label) => (
                     <button
                       key={label.id}
@@ -226,28 +253,30 @@ const Sidebar: React.FC<SidebarProps> = ({
                         handleLabelClick(label.id, false);
                         setIsCorporateOpen(false);
                       }}
-                      className={`w-full flex items-center justify-between px-3 py-2 text-sm transition-colors
-            ${
-              activeItem === `custom-label-${label.id}`
-                ? "bg-blue-100 text-blue-700"
-                : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
-            }`}
+                      className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors
+                        ${
+                          activeItem === `custom-label-${label.id}`
+                            ? "bg-blue-100 text-blue-700"
+                            : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                        }`}
                     >
                       <div className="flex items-center space-x-3">
                         <div
                           className="w-3 h-3 rounded-full"
                           style={{ backgroundColor: label.color }}
                         />
-                        <span>{label.name}</span>
+                        <span className={`${isOpen || window.innerWidth >= 1024 ? 'block' : 'hidden'}`}>
+                          {label.name}
+                        </span>
                       </div>
                       {getLabelCount(label.id) > 0 && (
                         <span
                           className={`px-2 py-1 text-xs rounded-full
-              ${
-                activeItem === `custom-label-${label.id}`
-                  ? "bg-blue-200 text-blue-800"
-                  : "bg-gray-200 text-gray-600"
-              }`}
+                            ${
+                              activeItem === `custom-label-${label.id}`
+                                ? "bg-blue-200 text-blue-800"
+                                : "bg-gray-200 text-gray-600"
+                            }`}
                         >
                           {getLabelCount(label.id)}
                         </span>
