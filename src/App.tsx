@@ -869,114 +869,106 @@ function App() {
           🔔 You have {differentNotificationCount} new messages
         </div>
       )} */}
-      {/* Main Layout with Sidebar and Header */}
-      <div className="flex flex-1 overflow-hidden">
-        {/* Sidebar */}
-        <Sidebar
-          activeItem={activeItem}
-          onItemSelect={handleSectionChange}
-          isOpen={sidebarOpen}
-          onComposeClick={handleComposeOpen}
-          customLabels={customLabels}
-          onManageLabels={() => setLabelManagerOpen(true)}
-          emailCounts={emailCounts}
-        />
+      <Header
+        onMenuToggle={handleMenuToggle}
+        onSearch={handleSearch}
+        onFiltersChange={handleFiltersChange}
+        filters={filters}
+        checkedEmails={checkedEmails}
+        onBulkMarkAsRead={handleBulkMarkAsRead}
+        onBulkDelete={handleBulkDelete}
+        onSelectAll={handleSelectAll}
+        onUnselectAll={handleUnselectAll}
+        onUndo={handleUndo}
+        hasSelection={checkedEmails.size > 0}
+        onComposeClick={handleComposeOpen}
+      />
 
-        {/* Main Content Area */}
-        <div className="flex-1 flex flex-col overflow-hidden">
-          {/* Header positioned to the right of sidebar */}
-          <Header
-            onMenuToggle={handleMenuToggle}
-            onSearch={handleSearch}
-            onFiltersChange={handleFiltersChange}
-            filters={filters}
-            checkedEmails={checkedEmails}
-            onBulkMarkAsRead={handleBulkMarkAsRead}
-            onBulkDelete={handleBulkDelete}
-            onSelectAll={handleSelectAll}
-            onUnselectAll={handleUnselectAll}
-            onUndo={handleUndo}
-            hasSelection={checkedEmails.size > 0}
-            onComposeClick={handleComposeOpen}
-          />
+      {/* Top Navigation */}
+      <Sidebar
+        activeItem={activeItem}
+        onItemSelect={handleSectionChange}
+        isOpen={sidebarOpen}
+        onComposeClick={handleComposeOpen}
+        customLabels={customLabels}
+        onManageLabels={() => setLabelManagerOpen(true)}
+        emailCounts={emailCounts}
+      />
 
-          {/* Content Area */}
-          <div className="flex-1 flex overflow-hidden">
-            {getMailListResponse?.isSuccess && (
-              <div className="flex-1 flex min-w-0">
-                {isFullPageView ? (
-                  <ConversationThread
-                    email={selectedEmail}
-                    onClose={() => setSelectedEmail(null)}
-                    onBack={handleBackToList}
-                    isFullPage={true}
-                    aiReplyState={getAiReplyState(selectedEmail?.message_id || "")}
-                    onGenerateAiReply={generateAiReply}
-                    onAiReplyStateChange={(newState) =>
-                      selectedEmail?.message_id &&
-                      updateAiReplyState(selectedEmail.message_id, newState)
-                    }
-                    customLabels={customLabels}
-                    onEmailLabelsChange={handleEmailLabelsChange}
-                    onCreateLabel={handleCreateLabel}
-                    onDeleteEmail={handleDeleteEmail}
-                    onRestoreEmail={handleRestoreEmail}
-                    activeSection={activeItem}
-                  />
+      <div className="flex-1 flex overflow-hidden">
+        {getMailListResponse?.isSuccess && (
+          <div className="flex-1 flex min-w-0">
+            {isFullPageView ? (
+              <ConversationThread
+                email={selectedEmail}
+                onClose={() => setSelectedEmail(null)}
+                onBack={handleBackToList}
+                isFullPage={true}
+                aiReplyState={getAiReplyState(selectedEmail?.message_id || "")}
+                onGenerateAiReply={generateAiReply}
+                onAiReplyStateChange={(newState) =>
+                  selectedEmail?.message_id &&
+                  updateAiReplyState(selectedEmail.message_id, newState)
+                }
+                customLabels={customLabels}
+                onEmailLabelsChange={handleEmailLabelsChange}
+                onCreateLabel={handleCreateLabel}
+                onDeleteEmail={handleDeleteEmail}
+                onRestoreEmail={handleRestoreEmail}
+                activeSection={activeItem}
+              />
+            ) : (
+              <div className="flex flex-1 h-full">
+                {getMailListResponse?.isLoading ||
+                getMailListResponse?.isFetching ? (
+                  <NavbarSkeleton />
                 ) : (
-                  <div className="flex flex-1 h-full">
-                    {getMailListResponse?.isLoading ||
-                    getMailListResponse?.isFetching ? (
-                      <NavbarSkeleton />
-                    ) : (
-                      <div className="flex-shrink-0">
-                        <EmailList
-                          emails={filteredEmails}
-                          selectedEmailId={selectedEmail?.message_id || null}
-                          onEmailSelect={handleEmailSelect}
-                          onStarToggle={handleStarToggle}
-                          onCheckToggle={handleCheckToggle}
-                          checkedEmails={checkedEmails}
-                          activeSection={activeItem}
-                          customLabels={customLabels}
-                          onEmailLabelsChange={handleEmailLabelsChange}
-                          onCreateLabel={handleCreateLabel}
-                          onBulkMarkAsRead={handleBulkMarkAsRead}
-                          onBulkDelete={handleBulkDelete}
-                          onBulkRestore={handleBulkRestore}
-                          onSelectAll={handleSelectAll}
-                          onUnselectAll={handleUnselectAll}
-                          setEmails={setEmails}
-                          readStatus={filters?.readStatus}
-                          searchFilter={searchFilter}
-                        />
-                      </div>
-                    )}
-
-                    <ConversationThread
-                      email={selectedEmail}
-                      onClose={() => setSelectedEmail(null)}
-                      isFullPage={false}
-                      aiReplyState={getAiReplyState(selectedEmail?.id || "")}
-                      onGenerateAiReply={generateAiReply}
-                      onAiReplyStateChange={(newState) =>
-                        selectedEmail?.message_id &&
-                        updateAiReplyState(selectedEmail.message_id, newState)
-                      }
+                  <div className="flex-shrink-0">
+                    <EmailList
+                      emails={filteredEmails}
+                      selectedEmailId={selectedEmail?.message_id || null}
+                      onEmailSelect={handleEmailSelect}
+                      onStarToggle={handleStarToggle}
+                      onCheckToggle={handleCheckToggle}
+                      checkedEmails={checkedEmails}
+                      activeSection={activeItem}
                       customLabels={customLabels}
                       onEmailLabelsChange={handleEmailLabelsChange}
                       onCreateLabel={handleCreateLabel}
-                      onDeleteEmail={handleDeleteEmail}
-                      onRestoreEmail={handleRestoreEmail}
-                      activeSection={activeItem}
-                      onStarToggle={handleStarToggle}
+                      onBulkMarkAsRead={handleBulkMarkAsRead}
+                      onBulkDelete={handleBulkDelete}
+                      onBulkRestore={handleBulkRestore}
+                      onSelectAll={handleSelectAll}
+                      onUnselectAll={handleUnselectAll}
+                      setEmails={setEmails}
+                      readStatus={filters?.readStatus}
+                      searchFilter={searchFilter}
                     />
                   </div>
                 )}
+
+                <ConversationThread
+                  email={selectedEmail}
+                  onClose={() => setSelectedEmail(null)}
+                  isFullPage={false}
+                  aiReplyState={getAiReplyState(selectedEmail?.id || "")}
+                  onGenerateAiReply={generateAiReply}
+                  onAiReplyStateChange={(newState) =>
+                    selectedEmail?.message_id &&
+                    updateAiReplyState(selectedEmail.message_id, newState)
+                  }
+                  customLabels={customLabels}
+                  onEmailLabelsChange={handleEmailLabelsChange}
+                  onCreateLabel={handleCreateLabel}
+                  onDeleteEmail={handleDeleteEmail}
+                  onRestoreEmail={handleRestoreEmail}
+                  activeSection={activeItem}
+                  onStarToggle={handleStarToggle}
+                />
               </div>
             )}
           </div>
-        </div>
+        )}
       </div>
 
       <LabelManager

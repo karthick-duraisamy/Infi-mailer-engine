@@ -110,15 +110,20 @@ const Header: React.FC<HeaderProps> = ({
       <div className="px-4 py-3">
         {/* Main Header Row */}
         <div className="flex items-center justify-between gap-4">
-          {/* Left Section - Mobile menu toggle only */}
-          <div className="flex items-center space-x-3 min-w-0 lg:hidden">
+          {/* Left Section - Logo/Brand */}
+          <div className="flex items-center space-x-3 min-w-0">
             <button
               onClick={onMenuToggle}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              className="lg:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors"
               aria-label="Toggle menu"
             >
               <Menu className="w-5 h-5 text-gray-600" />
             </button>
+            <div className="flex items-center space-x-2">
+              <h1 className="text-xl font-semibold text-gray-900 truncate">
+                Mail
+              </h1>
+            </div>
           </div>
 
           {/* Center Section - Search */}
