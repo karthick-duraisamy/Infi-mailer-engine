@@ -1,28 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@font-face {
-  font-family: 'Open Sans';
-  src: url('../public/assets/fonts/OpenSans/OpenSans-Regular.woff2') format('woff2');
-  font-weight: 400;
-  font-style: normal;
-}
-@font-face {
-  font-family: 'Open Sans';
-  src: url('../public/assets/fonts/OpenSans/OpenSans-SemiBold.woff2') format('woff2');
-  font-weight: 600;
-  font-style: normal;
-}
-@font-face {
-  font-family: 'Open Sans';
-  src: url('../public/assets/fonts/OpenSans/OpenSans-Bold.woff2') format('woff2');
-  font-weight: 700;
-  font-style: normal;
-}
-
 body {
-  font-family: 'Open Sans', sans-serif , Arial;
-  /* font-family: 'Arial'; */
+  font-family: 'Inter', 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
   font-weight: 400;
   background-color: #f2f5f8;
 }
