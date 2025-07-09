@@ -261,6 +261,35 @@ const Sidebar: React.FC<SidebarProps> = ({
             ${
               activeItem === `custom-label-${label.id}`
                 ? "bg-blue-100 text-blue-700"
+                : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+            }`}
+                    >
+                      <div className="flex items-center space-x-3">
+                        <div
+                          className="w-3 h-3 rounded-full"
+                          style={{ backgroundColor: label.color }}
+                        />
+                        <span>{label.name}</span>
+                      </div>
+                      {getLabelCount(label.id) > 0 && (
+                        <span
+                          className={`px-2 py-1 text-xs rounded-full
+              ${
+                activeItem === `custom-label-${label.id}`
+                  ? "bg-blue-200 text-blue-800"
+                  : "bg-gray-200 text-gray-600"
+              }`}
+                        >
+                          {getLabelCount(label.id)}
+                        </span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
       </nav>
     </>
   );
