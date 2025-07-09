@@ -18,6 +18,8 @@ import {
   CheckCircle,
   XCircle,
   Ticket,
+  Search,
+  X,
 } from "lucide-react";
 import { Email, CustomLabel } from "../types/email";
 import EmailLabelActions from "./EmailLabelActions";
@@ -86,6 +88,8 @@ const EmailList: React.FC<EmailListProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const startXRef = useRef<number>(0);
   const startWidthRef = useRef<number>(320);
+  const [showSearch, setShowSearch] = useState(false);
+  const [localSearchQuery, setLocalSearchQuery] = useState("");
   const [getMailList, getMailListResponse] = useLazyGetMailListResponseQuery();
   const [filterData, setFilterData] = useState<any>({
     page: 1,
@@ -99,6 +103,12 @@ const EmailList: React.FC<EmailListProps> = ({
   const dispatch = useDispatch();
   const [isFiltered, setIsFiltered] = useState(false);
   const [activeSectionTab, setActiveSectionTab] = useState("inbox");
+
+  // Initialize local search query from props
+  useEffect(() => {
+    setLocalSearchQuery(searchQuery || "");
+  }, [searchQuery]);
+
   useEffect(() => {
     // Initial call
     if (filters?.search === "") {
@@ -156,6 +166,33 @@ const EmailList: React.FC<EmailListProps> = ({
       }
     }
   }, [getMailListResponse]);
+
+  const handleSearchToggle = () => {
+    setShowSearch(!showSearch);
+    if (showSearch && localSearchQuery) {
+      // Clear search when closing
+      setLocalSearchQuery("");
+      onSearch("");
+    }
+  };
+
+  const handleSearchChange = (value: string) => {
+    setLocalSearchQuery(value);
+    onSearch(value);
+  };
+
+  const handleSearchClear = () => {
+    setLocalSearchQuery("");
+    onSearch("");
+  };
+
+  const handleSearchKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Escape") {
+      setShowSearch(false);
+      setLocalSearchQuery("");
+      onSearch("");
+    }
+  };
 
   const handleEmailDoubleClick = (email: Email, event: React.MouseEvent) => {
     event.stopPropagation();
@@ -415,8 +452,401 @@ const EmailList: React.FC<EmailListProps> = ({
         className="p-4 border-b border-gray-200"
         style={{ backgroundColor: "#eef7fe" }}
       >
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3">
+        <div className="space-y-3">
+          {/* Main Header Row */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              {/* Master Checkbox for Select All/Unselect All */}
+              <button
+                onClick={() => {
+                  if (checkedEmails.size === emails.length) {
+                    onUnselectAll();
+                  } else {
+                    onSelectAll();
+                  }
+                }}
+                className="text-gray-400 hover:text-gray-600 transition-colors"
+                title={
+                  checkedEmails.size === emails.length
+                    ? "Unselect all"
+                    : "Select all"
+                }
+              >
+                {checkedEmails.size === emails.length && emails.length > 0 ? (
+                  <CheckSquare className="w-4 h-4 text-blue-600" />
+                ) : checkedEmails.size > 0 ? (
+                  <Square className="w-4 h-4 text-blue-600 fill-blue-100" />
+                ) : (
+                  <Square className="w-4 h-4" />
+                )}
+              </button>
+
+              <div className="flex items-center space-x-2">
+                <div>
+                  <h2 className="text-lg font-semibold text-gray-900">
+                    {activeSectionTab === "sent" ? "Sent" : "Conversations"}
+                    {` (${emails.filter((email) => !email.is_read).length}/${
+                      readStatus === "all" ? inboxCount : emails.length
+                    })`}
+                  </h2>
+                  <p className="text-sm mt-1 truncate">
+                    {activeSectionTab === "inbox" && `support@atyourprice.net`}
+                  </p>
+                </div>
+
+                {/* Search Toggle Button */}
+                <button
+                  onClick={handleSearchToggle}
+                  className={`p-2 rounded-lg transition-colors ${
+                    showSearch
+                      ? "bg-blue-100 text-blue-600"
+                      : "text-gray-400 hover:text-gray-600 hover:bg-gray-100"
+                  }`}
+                  title="Search conversations"
+                >
+                  <Search className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+
+            {/* Actions Menu */}
+            <div className="flex items-center space-x-2">
+              {/* Label Actions - only show when emails are selected */}
+              {hasCheckedEmails && (
+                <EmailLabelActions
+                  emailIds={checkedEmailsArray}
+                  currentLabels={[]} // For bulk actions, we don't show current labels
+                  availableLabels={customLabels}
+                  onLabelsChange={(emailIds, labelIds) => {
+                    onEmailLabelsChange(emailIds, labelIds);
+                    // Clear selection after bulk label operation
+                    setTimeout(() => {
+                      onUnselectAll();
+                    }, 100);
+                  }}
+                  onCreateLabel={onCreateLabel}
+                />
+              )}
+
+              {/* More Actions Menu */}
+              <div className="relative">
+                <button
+                  onClick={() => setShowMoreActions(!showMoreActions)}
+                  className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                  title="More actions"
+                >
+                  <MoreHorizontal className="w-4 h-4" />
+                </button>
+
+                {showMoreActions && (
+                  <div className="absolute top-full right-0 mt-1 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+                    <div className="p-1">
+                      {/* Bulk Actions - only show when emails are selected */}
+                      {hasCheckedEmails ? (
+                        <>
+                          <button
+                            onClick={() => {
+                              onBulkMarkAsRead(checkedEmailsArray, true);
+                              setShowMoreActions(false);
+                              // Clear selections after operation
+                              setTimeout(() => onUnselectAll(), 100);
+                            }}
+                            className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded transition-colors"
+                          >
+                            Mark as Read
+                          </button>
+                          <button
+                            onClick={() => {
+                              onBulkMarkAsRead(checkedEmailsArray, false);
+                              setShowMoreActions(false);
+                              // Clear selections after operation
+                              setTimeout(() => onUnselectAll(), 100);
+                            }}
+                            className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded transition-colors"
+                          >
+                            Mark as Unread
+                          </button>
+                          <button
+                            onClick={() => {
+                              onBulkDelete(checkedEmailsArray);
+                              setShowMoreActions(false);
+                              // Clear selections after operation
+                              setTimeout(() => onUnselectAll(), 100);
+                            }}
+                            className="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded transition-colors"
+                          >
+                            Delete
+                          </button>
+                        </>
+                      ) : (
+                        <div className="px-3 py-2 text-sm text-gray-500">
+                          Select emails to see actions
+                        </div>
+                      )}
+
+                      {/* Undo Action */}
+                      {onUndo && (
+                        <>
+                          <div className="border-t border-gray-100 my-1"></div>
+                          <button
+                            onClick={() => {
+                              onUndo();
+                              setShowMoreActions(false);
+                            }}
+                            className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded transition-colors"
+                          >
+                            Undo Last Action
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Inline Search Box */}
+          {showSearch && (
+            <div className="animate-in slide-in-from-top-2 duration-200">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Search conversations..."
+                  value={localSearchQuery}
+                  onChange={(e) => handleSearchChange(e.target.value)}
+                  onKeyDown={handleSearchKeyDown}
+                  className="w-full pl-10 pr-10 py-2.5 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all placeholder-gray-400 text-sm shadow-sm"
+                  autoFocus
+                />
+                {localSearchQuery && (
+                  <button
+                    onClick={handleSearchClear}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                    title="Clear search"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                )}
+              </div>
+              
+              {/* Search Status */}
+              {localSearchQuery && (
+                <div className="mt-2 text-xs text-gray-500">
+                  {emails.length > 0 
+                    ? `Found ${emails.length} conversation${emails.length !== 1 ? 's' : ''} matching "${localSearchQuery}"`
+                    : `No conversations found for "${localSearchQuery}"`
+                  }
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div
+        className="divide-y divide-gray-100 overflow-y-auto thin-scrollbar"
+        onScroll={(e) => {
+          const target = e.currentTarget;
+          if (target.scrollHeight - target.scrollTop === target.clientHeight) {
+            // dispatch(resetFilters());
+            if (isFiltered) {
+              // dispatch(setFilterSettings({ ...filters, page: filters?.page + 1 }));
+              // setIsFiltered(true);
+            } else {
+              setFilterData((prev: any) => ({
+                ...prev,
+                page: prev.page + 1,
+              }));
+              setIsFiltered(false);
+            }
+          }
+        }}
+      >
+        {emails.map((email) => {
+          const isSelected = selectedEmailId === email.message_id;
+          const isChecked = checkedEmails.has(email.message_id);
+          const emailLabels = getEmailCustomLabels(email);
+
+          return (
+            <div
+              key={email.message_id}
+              className={`
+                p-4 cursor-pointer transition-colors hover:bg-gray-50
+                ${isSelected ? "bg-blue-50 border-r-2 border-blue-500" : ""}
+                ${!email.is_read ? "bg-blue-25" : ""}
+              `}
+              onClick={() => onEmailSelect(email)}
+              onDoubleClick={(e) => handleEmailDoubleClick(email, e)}
+              title="Double-click to open in full-page view"
+              style={{
+                ...(isSelected ? { borderRight: "1px solid blue" } : {}),
+              }}
+            >
+              <div className="flex items-start space-x-3">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onCheckToggle(email.message_id);
+                  }}
+                  className="mt-1 text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  {isChecked ? (
+                    <CheckSquare className="w-4 h-4 text-blue-600" />
+                  ) : (
+                    <Square className="w-4 h-4" />
+                  )}
+                </button>
+
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onStarToggle(email.message_id);
+                  }}
+                  className="mt-1 transition-colors"
+                >
+                  <Star
+                    className={`w-4 h-4 ${
+                      email.is_starred
+                        ? "text-yellow-500 fill-yellow-500"
+                        : "text-gray-400 hover:text-yellow-500"
+                    }`}
+                  />
+                </button>
+
+                <div className="flex-1 min-w-0 flex items-start justify-between">
+                  <div className="flex-1 min-w-0 pr-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2 min-w-0">
+                        <p
+                          className={`
+                          text-sm mt-1
+                          ${
+                            !email.is_read
+                              ? "font-bold text-black"
+                              : "font-semibold text-gray-400"
+                          }
+                          line-clamp-2
+                        `}
+                        >
+                          {getSenderName(email.from_address)}
+                        </p>
+                      </div>
+                      <p className="text-xs text-gray-500 ml-2 flex-shrink-0">
+                        {formatTime(email.created_at)}
+                      </p>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2 min-w-0">
+                        <p
+                          className={`
+                          text-sm mt-1
+                          ${
+                            !email.is_read
+                              ? "font-bold text-black"
+                              : "font-semibold text-gray-400"
+                          }
+                          line-clamp-2
+                        `}
+                        >
+                          {email.subject}
+                        </p>
+                      </div>
+                    </div>
+
+                    <p
+                      className={`
+                      text-sm mt-1 truncate
+                      ${
+                        !email.is_read
+                          ? "text-gray-700 font-medium"
+                          : "text-gray-400"
+                      }
+                    `}
+                    >
+                      {email.snippet}
+                    </p>
+
+                    {/* Custom Labels */}
+                    {/* {emailLabels.length > 0 && (
+                      <LabelList emailLabels={email?.labels as string[]} />
+                    )} */}
+                  </div>
+
+                  {/* Right side labels - responsive design */}
+                  <div className="flex-shrink-0 flex flex-col items-end space-y-1 ml-2">
+                    {email?.intent && (
+                      <div
+                        className={`
+                        inline-flex items-center px-2 py-1 rounded-full text-xs font-medium
+                        ${getIntentLabel(email.intent).color}
+                        sm:px-2 sm:py-1 xs:px-1 xs:py-0.5
+                      `}
+                      >
+                        {React.createElement(getIntentLabel(email.intent).icon, {
+                          className: `w-3 h-3 mr-1 sm:w-3 sm:h-3 xs:w-2 xs:h-2 ${
+                            getIntentLabel(email.intent).iconColor
+                          }`,
+                        })}
+                        <span className="hidden sm:inline">
+                          {getIntentLabel(email.intent).text}
+                        </span>
+                        <span className="sm:hidden text-[10px]">
+                          {getIntentLabel(email.intent).text.substring(0, 3)}
+                        </span>
+                      </div>
+                    )}
+                    
+                    {/* Corporate/Custom Labels */}
+                    {emailLabels.length > 0 && (
+                      <div className="flex flex-col items-end space-y-1 max-w-[120px] sm:max-w-[160px]">
+                        {emailLabels.slice(0, 2).map((label) => (
+                          <div
+                            key={label.id}
+                            className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium"
+                            style={{
+                              backgroundColor: `${label.color}15`,
+                              color: label.color,
+                              border: `1px solid ${label.color}30`,
+                            }}
+                          >
+                            <div
+                              className="w-2 h-2 rounded-full mr-1"
+                              style={{ backgroundColor: label.color }}
+                            />
+                            <span className="hidden sm:inline truncate">
+                              {label.name}
+                            </span>
+                            <span className="sm:hidden text-[10px]">
+                              {label.name.substring(0, 3)}
+                            </span>
+                          </div>
+                        ))}
+                        {emailLabels.length > 2 && (
+                          <div className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-600">
+                            <span className="hidden sm:inline">
+                              +{emailLabels.length - 2} more
+                            </span>
+                            <span className="sm:hidden text-[10px]">
+                              +{emailLabels.length - 2}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
+export default EmailList;
             {/* Master Checkbox for Select All/Unselect All */}
             <button
               onClick={() => {
