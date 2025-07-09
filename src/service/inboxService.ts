@@ -5,28 +5,28 @@ const service = InboxService.enhanceEndpoints({
 }).injectEndpoints({
   // Define a expected endpoints
   endpoints: (builder: any) => ({
-    // getMailListResponse: builder.query({
-    //   // query: () => `/mail-server/?project=${localStorage.getItem("project")}&page=1&page_size=100`, // dynamic project ID
-    //   query: (param: any) => ({
-    //     url: `/mail-server/?project=${localStorage.getItem("project")}`,
-    //     method: "GET",
-    //     params: param,
-    //   }),
-    // }),
-    // getConversationDetails: builder.query({
-    //   query: (param: any) =>
-    //     `/mail-server/${param.id}/?project=${localStorage.getItem("project")}`,
-    // }),
     getMailListResponse: builder.query({
-      query: () => "staticResponse/listResponse.json",
-    }),
-    getConvoResponse: builder.query({
-      query: () => "staticResponse/convoResponse.json",
+      // query: () => `/mail-server/?project=${localStorage.getItem("project")}&page=1&page_size=100`, // dynamic project ID
+      query: (param: any) => ({
+        url: `/mail-server/?project=${localStorage.getItem("project")}`,
+        method: "GET",
+        params: param,
+      }),
     }),
     getConversationDetails: builder.query({
       query: (param: any) =>
-        `staticResponse/${param.id}.json`,
+        `/mail-server/${param.id}/?project=${localStorage.getItem("project")}`,
     }),
+    // getMailListResponse: builder.query({
+    //   query: () => "staticResponse/listResponse.json",
+    // }),
+    getConvoResponse: builder.query({
+      query: () => "staticResponse/convoResponse.json",
+    }),
+    // getConversationDetails: builder.query({
+    //   query: (param: any) =>
+    //     `staticResponse/${param.id}.json`,
+    // }),
     getAIReplyResponse: builder.mutation({
       query: (body: any) => ({
         url: `/mail-server/ai-replay/`,
