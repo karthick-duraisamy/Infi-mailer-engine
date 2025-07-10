@@ -26,7 +26,11 @@ import { useLazyGetMailListResponseQuery } from "../service/inboxService";
 // import { FilterOptions } from "../components/EmailFilters";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../store/store";
-import { FilterOptions, resetFilters, setFilterSettings } from "../store/filterSlice";
+import {
+  FilterOptions,
+  resetFilters,
+  setFilterSettings,
+} from "../store/filterSlice";
 import { getIntentLabel, getSenderName } from "../hooks/commonFunction";
 
 interface EmailListProps {
@@ -84,6 +88,7 @@ const EmailList: React.FC<EmailListProps> = ({
   const [isResizing, setIsResizing] = useState(false);
   const [showMoreActions, setShowMoreActions] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const [searchText, setSearchText] = useState("");
   const startXRef = useRef<number>(0);
   const startWidthRef = useRef<number>(320);
   const [getMailList, getMailListResponse] = useLazyGetMailListResponseQuery();
@@ -91,7 +96,7 @@ const EmailList: React.FC<EmailListProps> = ({
     page: 1,
     page_size: 100,
     search: undefined,
-    folder: 'inbox'
+    folder: "inbox",
   });
   const [inboxCount, setInboxCount] = useState(0);
   const filters = useSelector((state: RootState) => state.filters);
@@ -191,7 +196,6 @@ const EmailList: React.FC<EmailListProps> = ({
       });
     }
   };
-
 
   const getSectionTitle = (section: string) => {
     switch (section) {
@@ -303,7 +307,7 @@ const EmailList: React.FC<EmailListProps> = ({
       // Use requestAnimationFrame for smoother updates
       requestAnimationFrame(() => {
         setWidth(clampedWidth);
-        localStorage.setItem('listwidth', clampedWidth.toString() + 'px');
+        localStorage.setItem("listwidth", clampedWidth.toString() + "px");
       });
     },
     [isResizing]
@@ -416,8 +420,9 @@ const EmailList: React.FC<EmailListProps> = ({
         style={{ backgroundColor: "#eef7fe" }}
       >
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            {/* Master Checkbox for Select All/Unselect All */}
+          {/* Left Section: Checkbox + Search + Email Info */}
+          <div className="flex items-start space-x-3">
+            {/* Master Checkbox */}
             <button
               onClick={() => {
                 if (checkedEmails.size === emails.length) {
@@ -426,7 +431,7 @@ const EmailList: React.FC<EmailListProps> = ({
                   onSelectAll();
                 }
               }}
-              className="text-gray-400 hover:text-gray-600 transition-colors"
+              className="mt-1 text-gray-400 hover:text-gray-600 transition-colors"
               title={
                 checkedEmails.size === emails.length
                   ? "Unselect all"
@@ -442,64 +447,88 @@ const EmailList: React.FC<EmailListProps> = ({
               )}
             </button>
 
-            <div style={{ height: "100%" }}>
-              <h2 className="text-lg font-semibold text-gray-900">
-                {/* {getSectionTitle(activeSection)} */}
-                {activeSectionTab === "sent" ? "Sent" : "Conversations"}
-                {` (${emails.filter((email) => !email.is_read).length}/${
-                  readStatus === "all" ? inboxCount : emails.length
-                })`}
-              </h2>
-              <p className={`text-sm mt-1 truncate`}>
-                {activeSectionTab === "inbox" && `support@atyourprice.net`}
-                {/* {toAddress ? `To: ${toAddress}` : "No recipients found"} */}
-              </p>
+            {/* Search Input + Email Info */}
+            <div className="flex flex-col">
+              {!hasCheckedEmails ? (
+                <>
+                  {/* Search Input */}
+                  <div className="relative w-full max-w-xs">
+                    <input
+                      type="text"
+                      placeholder="Search..."
+                      value={searchText}
+                      onChange={(e) => setSearchText(e.target.value)}
+                      onKeyDown={(e: any) => console.log(e.target.value)}
+                      className="w-full border rounded-md py-1.5 pl-3 pr-8 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    />
+                    <button
+                      onClick={() => console.log(searchText)}
+                      className="absolute inset-y-0 right-2 flex items-center text-gray-500 hover:text-blue-600"
+                    >
+                      🔍
+                    </button>
+                  </div>
+
+                  {/* Email Address Display */}
+                  <p className="text-sm mt-1 text-gray-800 truncate">
+                    support@atyourprice.net
+                  </p>
+                </>
+              ) : (
+                <>
+                  <h4 className="text-sm font-semibold text-gray-900">
+                    {activeSectionTab === "sent" ? "Sent" : "Selected Emails"}
+                    {` (${emails.filter((email) => !email.is_read).length}/${
+                      readStatus === "all" ? inboxCount : emails.length
+                    })`}
+                  </h4>
+                  <p className="text-sm mt-1 text-gray-800 truncate">
+                    support@atyourprice.net
+                  </p>
+                </>
+              )}
             </div>
           </div>
 
-          {/* Actions Menu */}
+          {/* Right Section: Action Buttons */}
           <div className="flex items-center space-x-2">
-            {/* Label Actions - only show when emails are selected */}
+            {/* Label Actions */}
             {hasCheckedEmails && (
               <EmailLabelActions
                 emailIds={checkedEmailsArray}
-                currentLabels={[]} // For bulk actions, we don't show current labels
+                currentLabels={[]}
                 availableLabels={customLabels}
                 onLabelsChange={(emailIds, labelIds) => {
                   onEmailLabelsChange(emailIds, labelIds);
-                  // Clear selection after bulk label operation
-                  setTimeout(() => {
-                    onUnselectAll();
-                  }, 100);
+                  setTimeout(() => onUnselectAll(), 100);
                 }}
                 onCreateLabel={onCreateLabel}
               />
             )}
 
-            {/* More Actions Menu */}
-            <div className="relative">
-              <button
-                onClick={() => setShowMoreActions(!showMoreActions)}
-                className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
-                title="More actions"
-              >
-                <MoreHorizontal className="w-4 h-4" />
-              </button>
+            {/* More Actions */}
+            {hasCheckedEmails && (
+              <div className="relative">
+                <button
+                  onClick={() => setShowMoreActions(!showMoreActions)}
+                  className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                  title="More actions"
+                >
+                  <MoreHorizontal className="w-4 h-4" />
+                </button>
 
-              {showMoreActions && (
-                <div className="absolute top-full right-0 mt-1 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
-                  <div className="p-1">
-                    {/* Bulk Actions - only show when emails are selected */}
-                    {hasCheckedEmails ? (
+                {showMoreActions && (
+                  <div className="absolute top-full right-0 mt-1 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+                    <div className="p-1">
+                      {/* Bulk Actions */}
                       <>
                         <button
                           onClick={() => {
                             onBulkMarkAsRead(checkedEmailsArray, true);
                             setShowMoreActions(false);
-                            // Clear selections after operation
                             setTimeout(() => onUnselectAll(), 100);
                           }}
-                          className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded transition-colors"
+                          className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded"
                         >
                           Mark as Read
                         </button>
@@ -507,10 +536,9 @@ const EmailList: React.FC<EmailListProps> = ({
                           onClick={() => {
                             onBulkMarkAsRead(checkedEmailsArray, false);
                             setShowMoreActions(false);
-                            // Clear selections after operation
                             setTimeout(() => onUnselectAll(), 100);
                           }}
-                          className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded transition-colors"
+                          className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded"
                         >
                           Mark as Unread
                         </button>
@@ -518,39 +546,34 @@ const EmailList: React.FC<EmailListProps> = ({
                           onClick={() => {
                             onBulkDelete(checkedEmailsArray);
                             setShowMoreActions(false);
-                            // Clear selections after operation
                             setTimeout(() => onUnselectAll(), 100);
                           }}
-                          className="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded transition-colors"
+                          className="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded"
                         >
                           Delete
                         </button>
                       </>
-                    ) : (
-                      <div className="px-3 py-2 text-sm text-gray-500">
-                        Select emails to see actions
-                      </div>
-                    )}
 
-                    {/* Undo Action */}
-                    {onUndo && (
-                      <>
-                        <div className="border-t border-gray-100 my-1"></div>
-                        <button
-                          onClick={() => {
-                            onUndo();
-                            setShowMoreActions(false);
-                          }}
-                          className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded transition-colors"
-                        >
-                          Undo Last Action
-                        </button>
-                      </>
-                    )}
+                      {/* Undo */}
+                      {onUndo && (
+                        <>
+                          <div className="border-t border-gray-100 my-1"></div>
+                          <button
+                            onClick={() => {
+                              onUndo();
+                              setShowMoreActions(false);
+                            }}
+                            className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded"
+                          >
+                            Undo Last Action
+                          </button>
+                        </>
+                      )}
+                    </div>
                   </div>
-                </div>
-              )}
-            </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -695,11 +718,14 @@ const EmailList: React.FC<EmailListProps> = ({
                         sm:px-2 sm:py-1 xs:px-1 xs:py-0.5
                       `}
                       >
-                        {React.createElement(getIntentLabel(email.intent).icon, {
-                          className: `w-3 h-3 mr-1 sm:w-3 sm:h-3 xs:w-2 xs:h-2 ${
-                            getIntentLabel(email.intent).iconColor
-                          }`,
-                        })}
+                        {React.createElement(
+                          getIntentLabel(email.intent).icon,
+                          {
+                            className: `w-3 h-3 mr-1 sm:w-3 sm:h-3 xs:w-2 xs:h-2 ${
+                              getIntentLabel(email.intent).iconColor
+                            }`,
+                          }
+                        )}
                         <span className="hidden sm:inline">
                           {getIntentLabel(email.intent).text}
                         </span>
@@ -708,7 +734,7 @@ const EmailList: React.FC<EmailListProps> = ({
                         </span>
                       </div>
                     )}
-                    
+
                     {/* Corporate/Custom Labels */}
                     {emailLabels.length > 0 && (
                       <div className="flex flex-col items-end space-y-1 max-w-[120px] sm:max-w-[160px]">

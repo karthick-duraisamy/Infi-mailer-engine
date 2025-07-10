@@ -978,7 +978,7 @@ function App() {
       />
 
       {/* Compose Panel - Fixed overlay on the right side */}
-      {composePanelOpen && (
+      {/* {composePanelOpen && (
         <ComposeModal
           isOpen={composePanelOpen}
           onClose={handleComposeClose}
@@ -986,7 +986,7 @@ function App() {
           onSaveDraft={handleSaveDraft}
           isPanel={true}
         />
-      )}
+      )} */}
     </div>
   );
 }
